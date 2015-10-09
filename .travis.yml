@@ -5,6 +5,9 @@ language: node
 services:
   - docker
 
+# matrix layout based on:
+# https://github.com/libressl-portable/portable/blob/9e090286b55def5ca2c0cc375c65023a70d8796e/.travis.yml
+
 matrix:
   include:
 #    - env: IMPL=awk
