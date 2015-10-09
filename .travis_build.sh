@@ -15,6 +15,9 @@ linux)
     docker run -it -u $(id -u) -v `pwd`:/mal kanaka/mal-test-${build_impl} id || true
     docker run -it -u $(id -u) -v `pwd`:/mal kanaka/mal-test-${build_impl} touch /root/.multirust || true
     docker run -it -u $(id -u) -v `pwd`:/mal kanaka/mal-test-${build_impl} touch /root/.multirust/blah || true
+    docker run -it -u $(id -u) -v `pwd`:/mal kanaka/mal-test-${build_impl} mount || true
+    docker run -it -u $(id -u) -v `pwd`:/mal kanaka/mal-test-${build_impl} ls -alrt /root/ || true
+    docker run -it -u $(id -u) -v `pwd`:/mal kanaka/mal-test-${build_impl} ls -alrt /root/.multirust/ || true
 
     docker run -it -u $(id -u) -v `pwd`:/mal kanaka/mal-test-${build_impl} make -C ${BUILD_IMPL}
     ;;
