@@ -14,8 +14,9 @@ if [ -z "${NO_DOCKER}" ]; then
         docker pull kanaka/mal-test-${build_impl}
     fi
     docker run -it -u $(id -u) -v `pwd`:/mal kanaka/mal-test-${build_impl} make -C ${BUILD_IMPL}
-    docker run -it -u $(id -u) -v `pwd`:/mal kanaka/mal-test-minimal find miniMAL/node_modules/ || true
-    set
+    docker run -it -u $(id -u) -v `pwd`:/mal kanaka/mal-test-minimal set
+    docker run -it -u $(id -u) -v `pwd`:/mal kanaka/mal-test-minimal bash -c "cd miniMAL && node -e \"console.log(require('ffi'))\""
+    docker run -it -u $(id -u) -v `pwd`:/mal kanaka/mal-test-minimal bash -c "cd miniMAL && node -e \"console.log(require('./node_modules/ffi/lib/ffi.js'))\""
     docker run -it -u $(id -u) -v `pwd`:/mal kanaka/mal-test-minimal node miniMAL/node_readline.js || true
 else
     make -C ${IMPL}
