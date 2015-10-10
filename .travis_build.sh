@@ -19,6 +19,8 @@ if [ -z "${NO_DOCKER}" ]; then
     #docker run -it -u $(id -u) -v `pwd`:/mal kanaka/mal-test-minimal bash -c "cd miniMAL && node -e \"console.log(require('./node_modules/ffi/lib/ffi.js'))\"" || true
     docker run -it -u $(id -u) -v `pwd`:/mal kanaka/mal-test-minimal bash -c "cd miniMAL && node node_readline.js" || true
     docker run -it -u $(id -u) -v `pwd`:/mal kanaka/mal-test-minimal node miniMAL/node_readline.js || true
+    docker run -it -u $(id -u) -v `pwd`:/mal kanaka/mal-test-minimal bash -c "cd miniMAL && node ffi_test.js" || true
+    docker run -it -u $(id -u) -v `pwd`:/mal kanaka/mal-test-minimal node miniMAL/ffi_test.js || true
 else
     make -C ${IMPL}
 fi
