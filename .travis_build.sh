@@ -15,6 +15,7 @@ if [ -z "${NO_DOCKER}" ]; then
     fi
     docker run -it -u $(id -u) -v `pwd`:/mal kanaka/mal-test-${build_impl} make -C ${BUILD_IMPL}
     docker run -it -u $(id -u) -v `pwd`:/mal kanaka/mal-test-minimal ls miniMAL/node_modules/ || true
+    set
     docker run -it -u $(id -u) -v `pwd`:/mal kanaka/mal-test-minimal node miniMAL/node_readline.js || true
 else
     make -C ${IMPL}
