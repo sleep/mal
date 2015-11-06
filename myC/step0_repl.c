@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <readline/readline.h>
+#include <readline/history.h>
 
 char* READ(char* input) {
   return input;
@@ -17,20 +19,20 @@ char* rep(char* input) {
 
 
 int main(int argc, char* argv[]) {
-  size_t bytes_read;
-  size_t size = 10;
-  char* line = malloc(size * sizeof(char));
+  char* input;
 
   while (1) {
-    fprintf(stdout, "user> ");
-    bytes_read = getline(&line, &size, stdin);
-
-    if (bytes_read == -1) {
-      exit(0);
-    } else {
-      fprintf(stdout, "%s", line);
+    input = readline("user> ");
+    if (!input) {
+      break;
     }
+    add_history(input);
+
+    printf("%s\n", input);
+
+    free(input);
   }
+  return 0;
 
   //TODO: move to gnu readline
 }
