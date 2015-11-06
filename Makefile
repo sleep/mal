@@ -106,7 +106,7 @@ vb_STEP_TO_PROG =      vb/$($(1)).exe
 vimscript_STEP_TO_PROG = vimscript/$($(1)).vim
 guile_STEP_TO_PROG =   guile/$($(1)).scm
 
-myC_STEP_TO_PROG = myC/$($(1)).c
+myC_STEP_TO_PROG = myC/$($(1))
 
 
 # Needed some argument munging
