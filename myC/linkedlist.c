@@ -13,8 +13,7 @@ LNode* ln_create(char* val) {
   LNode* n= malloc(sizeof(LNode));
   assert(n != NULL);
 
-  n->val = malloc(sizeof(val));
-  snprintf(n->val, sizeof(val), "%s", val);
+  n->val = strdup(val);
   n->next = NULL;
 
   return n;
@@ -22,8 +21,7 @@ LNode* ln_create(char* val) {
 
 void ln_set(LNode* node, char* val) {
   free(node->val);
-  node->val = malloc(sizeof(val));
-  snprintf(node->val, sizeof(val), "%s", val);
+  node->val = strdup(val);
 }
 
 void ln_print(LNode* head) {
