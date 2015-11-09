@@ -1,23 +1,27 @@
+#include "linkedlist.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
 #include <string.h>
 
-typedef struct LNode LNode;
-struct LNode {
-  LNode* next;
-  char* val;
-};
+#include "types.h"
 
 
 LNode* ln_create(const char* val) {
-  LNode* n= malloc(sizeof(LNode));
+  LNode* n = malloc(sizeof(LNode));
   assert(n != NULL);
 
   n->val = strdup(val);
   n->next = NULL;
 
   return n;
+}
+
+void ln_free(LNode* node) {
+  assert(node->val != NULL);
+  free(node->val);
+  free(node);
 }
 
 void ln_set(LNode* node, const char* val) {
@@ -30,20 +34,12 @@ void ln_print(LNode* head) {
   printf("%s\n", head->val);
 }
 
-void ln_free(LNode* node) {
-  assert(node->val != NULL);
-  free(node->val);
-  free(node);
-}
 
 
 
-typedef struct LList LList;
-struct LList {
-  //Invariant: head = NULL <=> length = 0
-  LNode* head;
-  int length;
-};
+
+
+
 
 
 
@@ -203,15 +199,3 @@ void ll_unshift(LList* list, const char* elem) {
     list->length += 1;
   }
 }
-
-//TODO:
-/*
-- implement shift, unshift
-- implement doubly linked list
-*/
-
-/* // remove from beginning, returning pointer to element */
-/* LNode* shift(LList* list); */
-
-/* /\* //Add to beginning *\/ */
-/* void unshift(LList* list, char* elem); */

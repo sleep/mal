@@ -3,6 +3,9 @@ CFLAGS+= `pkg-config --cflags libpcre`
 
 LDLIBS=-lreadline
 LDLIBS+= `pkg-config --libs libpcre`
+LDLIBS+=linkedlist.c reader.c
+
+DEPS=linkedlist.c
 
 all:
 	make step0_repl
