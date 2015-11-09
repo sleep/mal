@@ -6,13 +6,24 @@
 #include "reader.c"
 /* #include "linkedlist.c" */
 
-LList * strings;
 
 // Takes string, returns input ast
 char* READ(char* input) {
-  LList* tokens = tokenizer(input);
-  ll_print(tokens);
-  ll_free(tokens);
+  Reader* r = r_create(input);
+  ll_print(r->tokens);
+
+
+  LNode* n;
+  while(1) {
+    /* r_checkInvariants(r); */
+    n = r_next(r);
+    /* r_checkInvariants(r); */
+
+    if (n == NULL) break;
+    ln_print(n);
+  }
+
+  r_free(r);
 
   return input;
 }
@@ -34,7 +45,6 @@ char* rep(char* input) {
 
 int main(int argc, char* argv[]) {
   char* input;
-  strings = ll_create();
 
   while (1) {
     input = readline("user> ");
