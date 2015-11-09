@@ -1,10 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <readline/readline.h>
 #include <readline/history.h>
 
-#include "reader.c"
-/* #include "linkedlist.c" */
+#include "reader.h"
+#include "linkedlist.h"
 
 
 // Takes string, returns input ast
@@ -13,15 +14,13 @@ char* READ(char* input) {
   ll_print(r->tokens);
 
 
-  LNode* n;
-  while(1) {
-    /* r_checkInvariants(r); */
-    n = r_next(r);
-    /* r_checkInvariants(r); */
+  /* LNode* root = parse(r); */
+  /* mn_print(root); */
 
-    if (n == NULL) break;
-    ln_print(n);
-  }
+  /* LNode* n; */
+  /* while(n = r_next(r), n != NULL) { */
+  /*   ln_print(n); */
+  /* } */
 
   r_free(r);
 

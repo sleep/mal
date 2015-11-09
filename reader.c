@@ -1,11 +1,17 @@
+#include "reader.h"
+
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <pcre.h>
 #include <assert.h>
-#include "linkedlist.c"
+
+#include "linkedlist.h"
 
 
-//TODO: don't recompile pcre each time
+// Tokenizer
+
+//OPTIMIZATION: don't recompile pcre each time
 
 static const char*  strRegex = "[\\s ,]*(~@|[\\[\\]{}()'`~@]|\"(?:[\\\\].|[^\\\\\"])*\"|;.*|[^\\s \\[\\]{}()'\"`~@,;]*)";
 /* static const char* strRegex = "(\\w+)"; */
@@ -21,7 +27,7 @@ LList* tokenizer(char* input) {
   int oVec[30]; //positions of exec result
 
   if (re == NULL) {
-    printf("ERROR: Could not compile mal");
+    printf("ERROR: Could not compile mal regex\n");
     exit(1);
   }
 
@@ -70,13 +76,30 @@ LList* tokenizer(char* input) {
   return tokens;
 }
 
+// Reader
 
-typedef struct Reader Reader;
-struct Reader {
-  LList* tokens;
-  LNode* curr;
-  int pos;
-};
+
+
+
+Reader* r_create(char* input) {
+  Reader* r = malloc(sizeof(Reader));
+  r->tokens = tokenizer(input);
+  assert(r->tokens != NULL);
+
+  if (r->tokens->length == 0) {
+    r->curr = NULL;
+    r->pos = -1;
+  } else {
+    r->curr = ll_get(r->tokens, 0);
+    r->pos = 0;
+  }
+  return r;
+}
+
+void r_free(Reader* r) {
+  ll_free(r->tokens);
+  free(r);
+}
 
 void r_checkInvariants(Reader* r) {
   //check existence
@@ -111,32 +134,7 @@ void r_checkInvariants(Reader* r) {
       }
       assert(found);
     }
-
   }
-
-}
-
-
-
-
-Reader* r_create(char* input) {
-  Reader* r = malloc(sizeof(Reader));
-  r->tokens = tokenizer(input);
-  assert(r->tokens != NULL);
-
-  if (r->tokens->length == 0) {
-    r->curr = NULL;
-    r->pos = -1;
-  } else {
-    r->curr = ll_get(r->tokens, 0);
-    r->pos = 0;
-  }
-  return r;
-}
-
-void r_free(Reader* r) {
-  ll_free(r->tokens);
-  free(r);
 }
 
 LNode* r_peek(Reader* r) {
@@ -157,3 +155,38 @@ LNode* r_next(Reader* r) {
   r->pos += 1;
   return output;
 }
+
+
+
+
+/* //TODO: move AST to another file */
+LNode* parse(Reader* r) {
+  LNode* curr;
+  while(1) {
+    curr = r_next(r);
+    if (curr == NULL) break;
+
+  }
+  r_free(r);
+
+  //dummy
+  LNode* ln = malloc(sizeof(LNode));
+  return ln;
+}
+
+// recursive descent parser
+LNode* parseList(Reader* r) {
+  return (LNode*) NULL;
+
+}
+LNode* parseAtom(Reader* r) {
+  return (LNode*) NULL;
+}
+
+
+/* AST parseList() { */
+  
+/* } */
+/* AST parseAtom() { */
+  
+/* } */
