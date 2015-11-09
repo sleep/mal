@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
+#include <string.h>
 
 typedef struct LNode LNode;
 struct LNode {
@@ -9,7 +10,7 @@ struct LNode {
 };
 
 
-LNode* ln_create(char* val) {
+LNode* ln_create(const char* val) {
   LNode* n= malloc(sizeof(LNode));
   assert(n != NULL);
 
@@ -19,21 +20,14 @@ LNode* ln_create(char* val) {
   return n;
 }
 
-void ln_set(LNode* node, char* val) {
+void ln_set(LNode* node, const char* val) {
   free(node->val);
   node->val = strdup(val);
 }
 
 void ln_print(LNode* head) {
   assert(head != NULL);
-
-  LNode* curr = head;
-
-  while(curr != NULL) {
-    printf("%s", curr->val);
-    curr = curr->next;
-  }
-  printf("\n");
+  printf("%s\n", head->val);
 }
 
 void ln_free(LNode* node) {
@@ -90,15 +84,16 @@ void ll_free(LList* list) {
 
 void ll_print(LList* list) {
   if (list->length == 0) {
-    printf("EMPTY\n");
+    printf("[]\n");
     return;
   }
   LNode* curr = list->head;
-  for (int i = 0; i < list->length; i++) {
-    printf("%s", curr->val);
+  printf("[");
+  for (int i = 0; i < list->length -1; i++) {
+    printf("\"%s\", ", curr->val);
     curr = curr->next;
   }
-  printf("\n");
+  printf("\"%s\"]\n", curr->val);
 }
 
 
@@ -141,7 +136,7 @@ LNode* ll_get(LList* list, int index) {
 
 // MUTATORS
 // add to end
-void ll_push(LList* list, char* elem) {
+void ll_push(LList* list, const char* elem) {
 
   if (list->length == 0) {
     list->head = ln_create(elem);
@@ -196,7 +191,7 @@ LNode* ll_shift(LList* list) {
   return output;
 }
 
-void ll_unshift(LList* list, char* elem) {
+void ll_unshift(LList* list, const char* elem) {
   if (list->length == 0) {
     list->head = ln_create(elem);
     list->length = 1;

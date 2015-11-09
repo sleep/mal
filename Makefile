@@ -1,4 +1,8 @@
-CFLAGS=-Wall -g -lreadline
+CFLAGS=-Wall -Werror -g
+CFLAGS+= `pkg-config --cflags libpcre`
+
+LDLIBS=-lreadline
+LDLIBS+= `pkg-config --libs libpcre`
 
 all:
 	make step0_repl
