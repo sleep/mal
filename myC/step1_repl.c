@@ -3,12 +3,17 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 
-/* #include "reader.c" */
-#include "linkedlist.c"
+#include "reader.c"
+/* #include "linkedlist.c" */
+
+LList * strings;
 
 // Takes string, returns input ast
 char* READ(char* input) {
-  /* char** tokens = tokenizer(input); */
+  LList* tokens = tokenizer(input);
+  ll_print(tokens);
+  ll_free(tokens);
+
   return input;
 }
 
@@ -29,19 +34,19 @@ char* rep(char* input) {
 
 int main(int argc, char* argv[]) {
   char* input;
+  strings = ll_create();
 
   while (1) {
     input = readline("user> ");
+
     if (!input) {
       break;
     }
     add_history(input);
 
-    printf("%s\n", input);
+    READ(input);
 
     free(input);
   }
   return 0;
-
-  //TODO: move to gnu readline
 }
