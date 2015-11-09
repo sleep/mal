@@ -82,26 +82,36 @@ void r_checkInvariants(Reader* r) {
   //check existence
   assert(r != NULL);
   assert(r->tokens != NULL);
-  //check zero condition
+
+  //check zero-length condition
   if (r->tokens->length == 0) {
     assert(r->curr == NULL);
     assert(r->pos = -1);
   }
-  if (r->tokens->length > 0){
-    assert(r->curr != NULL);
-    assert(r->pos >= 0);
-    assert(r->pos < r->tokens->length);
 
-    //check inclusion of curr element
-    /* int index = 0; */
-    LNode* curr = ll_get(r->tokens, 0);
-    for (int i = 0 ; i < r->tokens->length; i++) {
-      if (curr == r->curr) {
-        return;
+  //check non-zero length condition
+  if (r->tokens->length > 0) {
+    assert(r->pos >= 0 && r->pos <= r->tokens->length);
+
+    // check end condition
+    if(r->pos == r->tokens->length) {
+      assert(r->curr == NULL);
+    }else {
+      // check non-end condition
+
+      //check inclusion of curr element
+      int found = 0;
+      LNode* curr = r->curr;
+      for (int i = 0 ; i < r->tokens->length; i++) {
+        if (curr == r->curr) {
+          found = 1;
+          break;
+        }
+        curr = curr->next;
       }
-      curr = curr->next;
+      assert(found);
     }
-    assert(0);
+
   }
 
 }
@@ -129,27 +139,21 @@ void r_free(Reader* r) {
   free(r);
 }
 
-int r_hasNext(Reader* r) {
-  assert(r->tokens->length > 0);
-  return r->pos < r->tokens->length -1;
-}
-
 LNode* r_peek(Reader* r) {
   return r->curr;
 }
 
-// Must check have next before we go next
 LNode* r_next(Reader* r) {
-  assert(r_hasNext(r));
+  if (r->pos == -1) {
+    return NULL;
+  }
+  if (r->pos == r->tokens->length) {
+    return NULL; //end
+  }
+  assert(r->pos >=0 && r->pos < r->tokens->length);
 
   LNode* output = r->curr;
   r->curr = output->next;
   r->pos += 1;
   return output;
-  
 }
-
-
-
-
-

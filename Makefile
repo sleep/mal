@@ -10,6 +10,7 @@ all:
 	make test
 test:
 	make tests/linkedlist_test
+	make tests/reader_test
 clean:
 	rm -f step*_repl
 	rm -f tests/*_test
