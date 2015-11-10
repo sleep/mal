@@ -14,14 +14,14 @@ struct Reader {
 
 Reader* r_create(char* input);
 void r_free(Reader* r);
-void r_checkInvariants(Reader* r);
+void r_check(Reader* r);
 LNode* r_peek(Reader* r);
 LNode* r_next(Reader* r);
 
 
 
 LNode* parse(Reader* r);
-LNode* parseList(Reader* r);
-LNode* parseAtom(Reader* r);
+LNode* parse_list(Reader* r);
+LNode* parse_atom(Reader* r);
 
 #endif
