@@ -48,13 +48,9 @@ void ll_check(LList* list) {
   }
 }
 
-void ll_free(LList* list) {
+void ll_free_recur(LList* list) {
   //assert existence
   assert(list != NULL);
-
-  // Free elements
-
-  // use for loop?
   if (list->length > 0) {
 
     //INVARIANT: curr is non-NULL
@@ -62,14 +58,19 @@ void ll_free(LList* list) {
     LNode* child = curr->next;
 
     while (child != NULL) {
-      ln_free(curr);
+      ln_free_recur(curr);
       curr = child;
       child = curr->next;
     }
 
     // INVARIANT: child == NULL
-    ln_free(curr);
+    ln_free_recur(curr);
   }
+  ll_free(list);
+}
+void ll_free(LList* list) {
+  //assert existence
+  assert(list != NULL);
 
   //Free list
   free(list);

@@ -41,7 +41,7 @@ void ll_test_pushpop() {
   ll_print(list);
   printf("\n");
   printf("Length of list: %d\n", list->length);
-  ln_free(expect_abc);
+  ln_free_recur(expect_abc);
 
   LNode* expect_space = ll_pop(list);
   ll_check(list);
@@ -50,7 +50,7 @@ void ll_test_pushpop() {
   printf("\n");
 
   printf("Length of list: %d\n", list->length);
-  ln_free(expect_space);
+  ln_free_recur(expect_space);
 
   LNode* expect_hello = ll_pop(list);
   ll_check(list);
@@ -59,10 +59,10 @@ void ll_test_pushpop() {
   printf("\n");
 
   printf("Length of list: %d\n", list->length);
-  ln_free(expect_hello);
+  ln_free_recur(expect_hello);
 
 
-  ll_free(list);
+  ll_free_recur(list);
 }
 
 void ll_test_shiftunshift() {
@@ -98,7 +98,7 @@ void ll_test_shiftunshift() {
   ll_print(list);
   printf("\n");
   printf("Length of list: %d\n", list->length);
-  ln_free(expect_hello);
+  ln_free_recur(expect_hello);
 
   LNode* expect_space = ll_shift(list);
   ll_check(list);
@@ -106,7 +106,7 @@ void ll_test_shiftunshift() {
   ll_print(list);
   printf("\n");
   printf("Length of list: %d\n", list->length);
-  ln_free(expect_space);
+  ln_free_recur(expect_space);
 
   LNode* expect_abc = ll_shift(list);
   ll_check(list);
@@ -114,11 +114,11 @@ void ll_test_shiftunshift() {
   ll_print(list);
   printf("\n");
   printf("Length of list: %d\n", list->length);
-  ln_free(expect_abc);
+  ln_free_recur(expect_abc);
 
 
 
-  ll_free(list);
+  ll_free_recur(list);
 }
 
 
@@ -129,7 +129,7 @@ int main(int argc, char* argv[]) {
   // createLList
   LList* list = ll_create();
   ll_check(list);
-  ll_free(list);
+  ll_free_recur(list);
 
   printf("\n* Testing ll_push, ll_pop\n");
   ll_test_pushpop();

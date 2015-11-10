@@ -49,17 +49,17 @@ void ln_check(LNode* node) {
   }
 }
 
+void ln_free_recur(LNode* node) {
+  if (node->type == LIST) {
+    ll_free_recur(node->val->list);
+  }
+  ln_free(node);
+}
+
 void ln_free(LNode* node) {
-  switch(node->type) {
-  case STRING:
-    free(node->val->str); //we only free strings, since they are presumed to be copied from stack
-    break;
-  case LIST:
-    // a list will have to be manually freed, since it can exist outside of a list node
-    /* free(node->val->list); */
-    break;
-  default:
-    break;
+  assert(node != NULL);
+  if (node->type == STRING) {
+    free(node->val->str);
   }
   free(node->val);
   free(node);
