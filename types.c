@@ -52,10 +52,11 @@ void ln_check(LNode* node) {
 void ln_free(LNode* node) {
   switch(node->type) {
   case STRING:
-    free(node->val->str);
+    free(node->val->str); //we only free strings, since they are presumed to be copied from stack
     break;
   case LIST:
-    free(node->val->list);
+    // a list will have to be manually freed, since it can exist outside of a list node
+    /* free(node->val->list); */
     break;
   default:
     break;
@@ -69,6 +70,9 @@ void ln_print(LNode* node) {
   switch(node->type) {
   case STRING:
     printf("\"%s\"", node->val->str);
+    break;
+  case LIST:
+    ll_print(node->val->list);
     break;
   default:
     printf("?");
