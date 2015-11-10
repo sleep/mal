@@ -64,7 +64,8 @@ LList* tokenizer(char* input) {
       /* printf("Start: %2d    Matches:%2d\n", start, rc); */
       /* printf("Match (%2d/%2d): (%2d, %2d): '%s'\n", match_no, rc -1, oVec[match_no*2], oVec[match_no*2+1], tok); */
 
-      ll_push(tokens, tok);
+      LNode* ln = ln_create_str(tok);
+      ll_push(tokens, ln);
       pcre_free_substring(tok);
 
       start = oVec[match_no*2+1];
@@ -182,11 +183,3 @@ LNode* parseList(Reader* r) {
 LNode* parseAtom(Reader* r) {
   return (LNode*) NULL;
 }
-
-
-/* AST parseList() { */
-  
-/* } */
-/* AST parseAtom() { */
-  
-/* } */
