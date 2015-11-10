@@ -7,7 +7,7 @@ LDLIBS+=types.c linkedlist.c reader.c
 
 all:
 	make step0_repl
-	make step1_repl
+	make step1_read_print
 	make test
 test:
 	make tests/linkedlist_test
@@ -18,5 +18,6 @@ run_tests:
 	valgrind ./tests/linkedlist_test && \
 	valgrind ./tests/reader_test
 clean:
-	rm -f step*_repl
+	rm -f step0_repl
+	rm -f step1_read_print
 	rm -f tests/*_test
