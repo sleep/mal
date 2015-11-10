@@ -102,7 +102,7 @@ void r_free(Reader* r) {
   free(r);
 }
 
-void r_checkInvariants(Reader* r) {
+void r_check(Reader* r) {
   //check existence
   assert(r != NULL);
   assert(r->tokens != NULL);
@@ -174,9 +174,10 @@ LNode* parse(Reader* r) {
 }
 
 // recursive descent parser
-LNode* parseList(Reader* r) {
+LNode* parse_list(Reader* r) {
   return (LNode*) NULL;
 }
-LNode* parseAtom(Reader* r) {
+
+LNode* parse_atom(Reader* r) {
   return (LNode*) NULL;
 }

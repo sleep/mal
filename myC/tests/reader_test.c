@@ -91,14 +91,14 @@ void test_reader(TestCase* tc) {
 
   int count = 0;
 
-  while (r_checkInvariants(r), n = r_next(r), n !=NULL) {
-    r_checkInvariants(r);
+  while (r_check(r), n = r_next(r), n !=NULL) {
+    r_check(r);
 
     printf("\"%s\" ", n->val->str);
     assert(strcmp(n->val->str, tc->expectedToks[count]) == 0);
 
     count += 1;
-    r_checkInvariants(r);
+    r_check(r);
   }
   if (count > 0) {
     printf("\b\b");
