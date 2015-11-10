@@ -98,7 +98,7 @@ Reader* r_create(char* input) {
 }
 
 void r_free(Reader* r) {
-  ll_free(r->tokens);
+  ll_free_recur(r->tokens);
   free(r);
 }
 

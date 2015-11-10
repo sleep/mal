@@ -13,7 +13,8 @@ struct LList {
 LList* ll_create();
 
 void ll_check(LList* list);
-void ll_free(LList* list); //frees each element's memory, as well.
+void ll_free(LList* list); //doesn't touch element memory
+void ll_free_recur(LList* list); //frees each element's memory, as well.
 void ll_print(LList* list);
 
 LNode* ll_get(LList* list, int index);

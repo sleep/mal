@@ -66,7 +66,7 @@ void test_tokenizer(TestCase* tc) {
   }
   assert(curr == NULL);
 
-  ll_free(tokens);
+  ll_free_recur(tokens);
 
   printf("\n");
 }

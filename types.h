@@ -39,5 +39,6 @@ LNode* ln_create_list(LList* val);
 
 void ln_check(LNode* node);
 void ln_free(LNode* node);
+void ln_free_recur(LNode* node);
 void ln_print(LNode* node);
 #endif
