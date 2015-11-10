@@ -1,42 +1,72 @@
 #include "linkedlist.h"
 
+#include "types.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
 #include <string.h>
 
-#include "types.h"
 
-
-LNode* ln_create(const char* val) {
+LNode* ln_create_str(char const * val) {
   LNode* n = malloc(sizeof(LNode));
   assert(n != NULL);
 
-  n->val = strdup(val);
+  n->type = STRING;
+  n->val->str = strdup(val);
   n->next = NULL;
-
   return n;
+}
+
+LNode* ln_create_list(LList* val) {
+  LNode* n = malloc(sizeof(LNode));
+  assert(n != NULL);
+
+  n->type = LIST;
+  n->val->list = val;
+  n->next = NULL;
+  return n;
+}
+
+
+void ln_check(LNode* node) {
+  assert(node != NULL);
+  assert(node->type);
+  assert(node->val != NULL);
+
+  switch(node->type) {
+  case STRING:
+    //check is string?
+    assert(node->val->str != NULL);
+    break;
+  case LIST:
+    // check if valid list?
+    assert(node->val->list != NULL);
+    break;
+  default:
+    break;
+  }
 }
 
 void ln_free(LNode* node) {
   assert(node->val != NULL);
   free(node->val);
   free(node);
-}
 
-void ln_set(LNode* node, const char* val) {
-  free(node->val);
-  node->val = strdup(val);
-}
-
-void ln_print(LNode* head) {
-  assert(head != NULL);
-  printf("%s\n", head->val);
+  //TODO: figure out whether I should free val's member type
 }
 
 
-
-
+void ln_print(LNode* node) {
+  switch(node->type) {
+  case STRING:
+    printf("%s", node->val->str);
+    break;
+  default:
+    printf("?");
+    break;
+  }
+}
 
 
 
@@ -49,6 +79,32 @@ LList* ll_create(){
   list->head = NULL;
   list->length = 0;
   return list;
+}
+
+void ll_check(LList* list) {
+  // check existence
+  assert(list != NULL);
+
+  //check length is positive
+  assert(list->length >= 0);
+
+  // Check length is correct:
+  if (list->length > 0) {
+    //Check conditions for non-zero length:
+    // aka, check if length-1th child is a leaf
+    assert(list->head != NULL);
+
+    LNode* curr = list->head;
+
+    for (int i = 1; i< list->length; i++) {
+      curr = curr->next;
+    }
+    assert(curr->next == NULL);
+  } else {
+    // check conditions for zero-length:
+    // aka check if head is equal to nulist pointer
+    assert(list->head == NULL);
+  }
 }
 
 void ll_free(LList* list) {
@@ -80,44 +136,21 @@ void ll_free(LList* list) {
 
 void ll_print(LList* list) {
   if (list->length == 0) {
-    printf("[]\n");
+    printf("()");
     return;
   }
   LNode* curr = list->head;
-  printf("[");
+  printf("(");
   for (int i = 0; i < list->length -1; i++) {
-    printf("\"%s\", ", curr->val);
+    ln_print(curr);
     curr = curr->next;
+    printf(" ");
   }
-  printf("\"%s\"]\n", curr->val);
+  ln_print(curr);
+  printf(")");
 }
 
 
-void ll_check(LList* list) {
-  // check existence
-  assert(list != NULL);
-
-  //check length is positive
-  assert(list->length >= 0);
-
-  // Check length is correct:
-  if (list->length > 0) {
-    //Check conditions for non-zero length:
-    // aka, check if length-1th child is a leaf
-    assert(list->head != NULL);
-
-    LNode* curr = list->head;
-
-    for (int i = 1; i< list->length; i++) {
-      curr = curr->next;
-    }
-    assert(curr->next == NULL);
-  } else {
-    // check conditions for zero-length:
-    // aka check if head is equal to nulist pointer
-    assert(list->head == NULL);
-  }
-}
 
 
 LNode* ll_get(LList* list, int index) {
@@ -131,16 +164,18 @@ LNode* ll_get(LList* list, int index) {
 }
 
 // MUTATORS
-// add to end
-void ll_push(LList* list, const char* elem) {
+
+// private
+void ll_push(LList* list, LNode* node) {
+  assert(node->next == NULL); //assert node is atomic
 
   if (list->length == 0) {
-    list->head = ln_create(elem);
+    list->head = node;
     list->length = 1;
   }else {
     LNode* tail = ll_get(list, list->length - 1);
 
-    tail->next = ln_create(elem);
+    tail->next = node;
     list->length += 1;
   }
 }
@@ -187,12 +222,13 @@ LNode* ll_shift(LList* list) {
   return output;
 }
 
-void ll_unshift(LList* list, const char* elem) {
+void ll_unshift(LList* list, LNode* node) {
+  assert(node->next == NULL); //assert node has no connections
   if (list->length == 0) {
-    list->head = ln_create(elem);
+    list->head = node;
     list->length = 1;
   }else {
-    LNode* newhead = ln_create(elem);
+    LNode* newhead = node;
     newhead->next = list->head;
 
     list->head = newhead;
