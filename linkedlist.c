@@ -13,6 +13,7 @@ LNode* ln_create_str(char const * val) {
   assert(n != NULL);
 
   n->type = STRING;
+  n->val = malloc(sizeof(Val));
   n->val->str = strdup(val);
   n->next = NULL;
   return n;
@@ -23,6 +24,7 @@ LNode* ln_create_list(LList* val) {
   assert(n != NULL);
 
   n->type = LIST;
+  n->val = malloc(sizeof(Val));
   n->val->list = val;
   n->next = NULL;
   return n;
@@ -31,7 +33,7 @@ LNode* ln_create_list(LList* val) {
 
 void ln_check(LNode* node) {
   assert(node != NULL);
-  assert(node->type);
+  /* assert(node->type != NULL); //assume initialized */
   assert(node->val != NULL);
 
   switch(node->type) {
@@ -49,18 +51,25 @@ void ln_check(LNode* node) {
 }
 
 void ln_free(LNode* node) {
-  assert(node->val != NULL);
+  switch(node->type) {
+  case STRING:
+    free(node->val->str);
+    break;
+  case LIST:
+    free(node->val->list);
+    break;
+  default:
+    break;
+  }
   free(node->val);
   free(node);
-
-  //TODO: figure out whether I should free val's member type
 }
 
 
 void ln_print(LNode* node) {
   switch(node->type) {
   case STRING:
-    printf("%s", node->val->str);
+    printf("\"%s\"", node->val->str);
     break;
   default:
     printf("?");
@@ -185,9 +194,8 @@ void ll_push(LList* list, LNode* node) {
 LNode* ll_pop(LList* list) {
   assert(list->length > 0);
 
-
   if (list->length == 1) {
-    LNode* output =  list->head;
+    LNode* output = list->head;
     list->head = NULL;
     list->length = 0;
     return output;
