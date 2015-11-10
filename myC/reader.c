@@ -162,11 +162,9 @@ LNode* r_next(Reader* r) {
 
 /* //TODO: move AST to another file */
 LNode* parse(Reader* r) {
-  LNode* curr;
-  while(1) {
-    curr = r_next(r);
-    if (curr == NULL) break;
 
+  LNode* curr;
+  while(curr = r_next(r), curr != NULL) {
   }
   r_free(r);
 
@@ -178,7 +176,6 @@ LNode* parse(Reader* r) {
 // recursive descent parser
 LNode* parseList(Reader* r) {
   return (LNode*) NULL;
-
 }
 LNode* parseAtom(Reader* r) {
   return (LNode*) NULL;
