@@ -12,6 +12,7 @@
 char* READ(char* input) {
   Reader* r = r_create(input);
   ll_print(r->tokens);
+  printf("\n");
 
 
   /* LNode* root = parse(r); */

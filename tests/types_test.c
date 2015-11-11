@@ -6,6 +6,7 @@
 #include "../types.h"
 #include "../linkedlist.h"
 
+
 void ln_test_str() {
   printf("\n** Testing LNode of strings\n");
   LNode* head = ln_create_str("Hello");

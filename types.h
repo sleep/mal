@@ -1,9 +1,14 @@
+#include "tokens.h"
+
 #ifndef TYPES_H
 #define TYPES_H
+
+
 
 typedef enum {
   STRING,
   LIST,
+  TOKEN,
 
 
   MT_LIST,
@@ -24,6 +29,7 @@ union Val {
   int i;
   char* str;
   LList* list;
+  Token* tok;
 };
 
 
@@ -34,11 +40,13 @@ struct LNode {
   Val* val;
 };
 
-LNode* ln_create_str(char const * val);
+LNode* ln_create_str(char* val);
 LNode* ln_create_list(LList* val);
+LNode* ln_create_tok(Token* val);
 
 void ln_check(LNode* node);
 void ln_free(LNode* node);
 void ln_free_recur(LNode* node);
 void ln_print(LNode* node);
+
 #endif

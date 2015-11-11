@@ -6,7 +6,10 @@
 #include <pcre.h>
 #include <assert.h>
 
+#include "types.h"
+#include "tokens.h"
 #include "linkedlist.h"
+
 
 
 // Tokenizer
@@ -16,13 +19,13 @@
 static const char*  strRegex = "[\\s ,]*(~@|[\\[\\]{}()'`~@]|\"(?:[\\\\].|[^\\\\\"])*\"|;.*|[^\\s \\[\\]{}()'\"`~@,;]*)";
 /* static const char* strRegex = "(\\w+)"; */
 
-LList* tokenizer(char* input) {
+LList* tokenize(char* input) {
 
   const char* pcreErrorStr;
   int pcreErrorOffset;
   pcre* re = pcre_compile(strRegex, 0, &pcreErrorStr, &pcreErrorOffset, NULL);
   int rc = 1; //return value of exec
-  const char* tok;
+  const char* tokstr;
 
   int oVec[30]; //positions of exec result
 
@@ -56,17 +59,21 @@ LList* tokenizer(char* input) {
     }else {
 
       int match_no = 1;
-      pcre_get_substring(input, oVec, rc, match_no, &tok);
-      if (strlen(tok) < 1) {
-        pcre_free_substring(tok);
+      pcre_get_substring(input, oVec, rc, match_no, &tokstr);
+      if (strlen(tokstr) < 1) {
+        pcre_free_substring(tokstr);
         break;
       }
       /* printf("Start: %2d    Matches:%2d\n", start, rc); */
       /* printf("Match (%2d/%2d): (%2d, %2d): '%s'\n", match_no, rc -1, oVec[match_no*2], oVec[match_no*2+1], tok); */
 
-      LNode* ln = ln_create_str(tok);
+      char* unconsted = strdup(tokstr);
+      Token* tok = tok_parse(unconsted);
+      LNode* ln = ln_create_tok(tok);
+
       ll_push(tokens, ln);
-      pcre_free_substring(tok);
+      free(unconsted);
+      pcre_free_substring(tokstr);
 
       start = oVec[match_no*2+1];
       iter +=1;
@@ -84,7 +91,7 @@ LList* tokenizer(char* input) {
 
 Reader* r_create(char* input) {
   Reader* r = malloc(sizeof(Reader));
-  r->tokens = tokenizer(input);
+  r->tokens = tokenize(input);
   assert(r->tokens != NULL);
 
   if (r->tokens->length == 0) {
@@ -158,19 +165,26 @@ LNode* r_next(Reader* r) {
 }
 
 
+//@private
+//returns 1 if next token is of the expected type, 0 if not.
+int r_accept(Reader* r, TokenType expected) {
+  LNode* next = r_next(r);
+  if (next == NULL) return 0;
+  return next->val->tok->tt == expected;
+}
+
+
 
 
 /* //TODO: move AST to another file */
 LNode* parse(Reader* r) {
-
   LNode* curr;
   while(curr = r_next(r), curr != NULL) {
+    tok_print(curr->val->tok);
   }
-  r_free(r);
+  LNode* dummy = ln_create_str("dummy");
 
-  //dummy
-  LNode* ln = malloc(sizeof(LNode));
-  return ln;
+  return dummy;
 }
 
 // recursive descent parser

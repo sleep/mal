@@ -3,7 +3,7 @@
 #ifndef READER_H
 #define READER_H
 
-LList* tokenizer(char* input);
+LList* tokenize(char* input);
 
 typedef struct Reader Reader;
 struct Reader {
@@ -13,6 +13,7 @@ struct Reader {
 };
 
 Reader* r_create(char* input);
+
 void r_free(Reader* r);
 void r_check(Reader* r);
 LNode* r_peek(Reader* r);
@@ -25,3 +26,6 @@ LNode* parse_list(Reader* r);
 LNode* parse_atom(Reader* r);
 
 #endif
+
+// TODO: make things private
+// TODO: make tests require .c files...
