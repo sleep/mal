@@ -30,11 +30,11 @@
 
 ## Roadmap/Journal
 
-Implementing a self-hosting lisp interpreter has got to be one of the most pedagogically cost-effective<b>*</b> projects. My goal is to juice as much knowledge/experience from this project, so I'm doing this project in C, a practical language most orthogonal to the interpreted, high-level languages I'm comfortable with. Having never written anything non-trivial in a non-garbage-collected language, I'm hoping this endeavor will fill in many holes in my CS knowledge.
+Implementing a self-hosting lisp interpreter has got to be one of the most pedagogically cost-effective<b>*</b> canonical projects out there. My goal is to juice as much knowledge/experience from this project, so I'm doing this project in C, a practical language most orthogonal to the interpreted, high-level languages I'm comfortable with. Having never written anything non-trivial in a non-garbage-collected language, I'm hoping this endeavor will fill in a few holes in my CS knowledge.
 
-Kanaka's Make-a-Lisp challenge gives a language-agnostic roadmap that's high-level enough to require architectural forethought on behalf of the implementer, but also clear enough to save the implementer from moments of design-decision Buridan's Assery. The making of any self-hosting compiler/interpreter is always a journey. With all explorations, there are things to be gained, things to be lost when journeying with a prescribed route. By sticking with someone else's (well-curated) route, efficiency and therefore breadth are undoubtably gained. However, one loses the sentimentality, the sense of ownership, the developing of natural sense of direction, that comes with impromptu, plan-as-you-go journeys. With that said, I've chosen to go with Kanaka's guide and treat this project more as exercise than exploration, with the latter choice saved for another journey...
+Kanaka's Make-a-Lisp challenge gives a language-agnostic roadmap that's high-level enough to require architectural forethought on behalf of the implementer, but also clear enough to save the implementer from moments of design-decision Buridan's Assery. The making of any self-hosting compiler/interpreter is always a journey. With all explorations, there are things to be gained, things to be lost when journeying with a prescribed route. By sticking with someone else's (well-curated) route, efficiency and therefore breadth are undoubtably gained. However, one loses the sentimentality, the sense of ownership, the developing of natural sense of direction, that comes with impromptu, plan-as-you-go journeys. With that said, I've chosen to go with Kanaka's guide and treat this project more as exercise than exploration, with the latter choice saved for another time...
 
-<b>*</b><sub>i.e. ratio of personal gratification/breadth of knowledge gained over the time/energy spent. </sub>
+<sub>*i.e. ratio of gratification/knowledge gained over energy spent. </sub>
 
 <br/>
 
@@ -43,7 +43,7 @@ Kanaka's Make-a-Lisp challenge gives a language-agnostic roadmap that's high-lev
 - [x] set up print
 - [x] Use gnu readline
 
-<sub>First forays into C ecosystem; got familiar with make, valgrind, linking. Managed to wrap my head around pointers and null-terminated strings.</sub>
+First forays into C ecosystem; got familiar with make, valgrind, linking. Managed to wrap my head around pointers and null-terminated strings.
 
 ### Step 1: Read and Print
 
@@ -59,3 +59,4 @@ Kanaka's Make-a-Lisp challenge gives a language-agnostic roadmap that's high-lev
 `Print :: (AST) -> String`
 - [ ] Figure out how to pass strings and combine them
 
+Figured out more of the mess regarding C declaration syntax. Dealt with const correctectness. Getting the hang of heap vs stack. Grokking function pointers for testing.
