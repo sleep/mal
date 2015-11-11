@@ -16,8 +16,8 @@ Reader* r_create(char* input);
 
 void r_free(Reader* r);
 void r_check(Reader* r);
-LNode* r_peek(Reader* r);
-LNode* r_next(Reader* r);
+Token* r_peek(Reader* r);
+Token* r_next(Reader* r);
 
 
 

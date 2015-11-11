@@ -91,4 +91,4 @@ int main(int argc, char* argv[]) {
   return 0;
 }
 
-//TODO: test other parts of types
+//TODO: Test mal types...

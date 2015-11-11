@@ -130,6 +130,7 @@ void r_check(Reader* r) {
     }else {
       // check non-end condition
 
+      ll_check(r->tokens);
       //check inclusion of curr element
       int found = 0;
       LNode* curr = r->curr;
@@ -145,32 +146,35 @@ void r_check(Reader* r) {
   }
 }
 
-LNode* r_peek(Reader* r) {
-  return r->curr;
-}
-
-LNode* r_next(Reader* r) {
-  if (r->pos == -1) {
-    return NULL;
-  }
-  if (r->pos == r->tokens->length) {
-    return NULL; //end
+Token* r_peek(Reader* r) {
+  if ((r->pos == -1) || (r->pos == r->tokens->length)) {
+    return NULL; // return NULL if empty, or at end;
   }
   assert(r->pos >=0 && r->pos < r->tokens->length);
 
-  LNode* output = r->curr;
-  r->curr = output->next;
+  return r->curr->val->tok;
+}
+
+Token* r_next(Reader* r) {
+  if ((r->pos == -1) || (r->pos == r->tokens->length)) {
+    return NULL; // return NULL if empty, or at end;
+  }
+  assert(r->pos >=0 && r->pos < r->tokens->length);
+
+  LNode* outputNode = r->curr;
+
+  r->curr = outputNode->next;
   r->pos += 1;
-  return output;
+  return outputNode->val->tok;
 }
 
 
 //@private
 //returns 1 if next token is of the expected type, 0 if not.
 int r_accept(Reader* r, TokenType expected) {
-  LNode* next = r_next(r);
+  Token* next = r_next(r);
   if (next == NULL) return 0;
-  return next->val->tok->tt == expected;
+  return next->tt == expected;
 }
 
 
@@ -178,20 +182,54 @@ int r_accept(Reader* r, TokenType expected) {
 
 /* //TODO: move AST to another file */
 LNode* parse(Reader* r) {
-  LNode* curr;
-  while(curr = r_next(r), curr != NULL) {
-    tok_print(curr->val->tok);
+  Token* curr = r_peek(r);
+  if (curr->tt == TLP) {
+    return parse_list(r);
   }
-  LNode* dummy = ln_create_str("dummy");
-
-  return dummy;
+  return parse_atom(r);
 }
 
 // recursive descent parser
 LNode* parse_list(Reader* r) {
+  if (r_accept(r, TLP)) {
+    Token* curr;
+
+    LList* list = ll_create();
+    LNode* output = ln_create_list(list);
+
+    while(curr = r_peek(r), curr != NULL) {
+      if (curr->tt == TRP) {
+        r_accept(r, TLP);
+        return output; //yay!
+      }
+
+      LNode* atom = parse(r);
+      ll_push(list, atom);
+    }
+
+    //something went wrong...
+    ll_free(list);
+    ln_free(output);
+  }
+
   return (LNode*) NULL;
 }
 
 LNode* parse_atom(Reader* r) {
-  return (LNode*) NULL;
+  Token* curr = r_next(r);
+  assert(curr != NULL);
+
+  switch(curr->tt) {
+  case TNUM:
+    return ln_create_mnum(curr->val->i);
+  case TSYM:
+    return ln_create_msym(curr->val->str);
+  case TSTR:
+    return ln_create_mstr(curr->val->str);
+  default:
+    printf("\n\nSomething went wrong!! %d\n\n", curr->tt);
+    assert(0);
+    return (LNode*)NULL;
+  }
+
 }
