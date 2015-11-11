@@ -106,7 +106,11 @@ void test_parse(TestCase* tc) {
   for (i = 0; i < tc->length; i++) {
     printf("\"");
     tokens[i] = tok_parse(tc->input[i]);
-    //TODO: make tests for proper token copying, each way (type, val)
+
+    tok_assert_equals(tokens[i], tc->tokens[i]);
+    assert(tok_equals(tokens[i], tc->tokens[i]));
+
+
     tok_print(tokens[i]);
     printf("\", ");
   }
@@ -119,9 +123,6 @@ void test_parse(TestCase* tc) {
 
   free(tokens);
 }
-
-
-//TODO: test token equals
 
 
 int main (int argc, char* argv[]) {

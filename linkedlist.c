@@ -38,6 +38,7 @@ void ll_check(LList* list) {
     LNode* curr = list->head;
 
     for (int i = 1; i< list->length; i++) {
+      assert(curr != NULL);
       curr = curr->next;
     }
     assert(curr->next == NULL);
@@ -60,7 +61,7 @@ void ll_free_recur(LList* list) {
     while (child != NULL) {
       ln_free_recur(curr);
       curr = child;
-      child = curr->next;
+      child = child->next;
     }
 
     // INVARIANT: child == NULL
@@ -109,6 +110,8 @@ LNode* ll_get(LList* list, int index) {
 
 // private
 void ll_push(LList* list, LNode* node) {
+  assert(node != NULL);
+
   assert(node->next == NULL); //assert node is atomic
 
   if (list->length == 0) {

@@ -91,7 +91,7 @@ void test_tokenize(TestCase* tc) {
   assert(curr == NULL);
 
 
-  ll_free_recur(tokens);
+  /* ll_free_recur(tokens); */
 
   printf("\n");
 }
@@ -103,29 +103,27 @@ void test_tokenize(TestCase* tc) {
 void test_reader(TestCase* tc) {
   printf("** Input: %s\n", tc->input);
   Reader* r = r_create(tc->input);
-  LNode* n;
-  LNode* peeked = r_peek(r);
+  Token* curr;
+  Token* next = r_peek(r);
 
   printf("** Expecting: ");
   tc_print_strs(tc);
   printf("\n");
 
-  if (tc->length == 0) {
-
-  }
+  printf("READER: length: %d\n", r->tokens->length);
   printf("** Got:       ");
 
   int count = 0;
 
-  while (r_check(r), n = r_next(r), n !=NULL) {
+  while (r_check(r), curr = r_next(r), curr !=NULL) {
     r_check(r);
-    assert(n == peeked); // This tests peeking
-    peeked = r_peek(r);
+    assert(next == curr); // This tests peeking
+    next = r_peek(r);
 
 
-    assert(tok_equals(tc->tokens[count], n->val->tok));
+    assert(tok_equals(tc->tokens[count], curr));
     printf("\"");
-    tok_print(n->val->tok);
+    tok_print(curr);
     printf("\" ");
 
     count += 1;
@@ -142,14 +140,19 @@ void test_reader(TestCase* tc) {
 }
 
 void test_parser (TestCase* tc) {
-  printf("** Input: %s\n", tc->input);
+  printf("**   Input: %s\n", tc->input);
+
   Reader* r = r_create(tc->input);
 
   LNode* output = parse(r);
 
-  printf("** output: ");
+  /* if (output == NULL) { */
+  /*   printf("** output: ERROR PARSING!!\n"); */
+  /* }else { */
+  printf("**  Output: ");
   ln_print(output);
   printf("\n");
+
   ln_free_recur(output);
   r_free(r);
 }
@@ -161,11 +164,11 @@ int main(int argc, char* argv[]) {
   printf("\n* Testing tokenize:\n");
   test(test_tokenize);
 
-  printf("\n* Testing reader:\n");
-  test(test_reader);
+  /* printf("\n* Testing reader:\n"); */
+  /* test(test_reader); */
 
-  printf("\n* Testing parser:\n");
-  test(test_parser);
+  /* printf("\n* Testing parser:\n"); */
+  /* test(test_parser); */
 
   printf("\n* Success!\n");
   return 0;
