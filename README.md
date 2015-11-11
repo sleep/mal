@@ -19,9 +19,11 @@
 
 
 <br/>
-### Possible directions...
+
+### Possible directions to take this...
 - Do away with standard library and readline, i.e roll my own malloc, free, strings.h, readline.
 - Go halfway with C, pick up the rest in Rust?
+
 <br/>
 
 
@@ -34,24 +36,26 @@ Kanaka's Make-a-Lisp challenge gives a language-agnostic roadmap that's high-lev
 
 <b>*</b><sub>i.e. ratio of personal gratification/breadth of knowledge gained over the time/energy spent. </sub>
 
-### [x] Step 0: The REPL
+<br/>
+
+### Step 0: The REPL
 - [x] set up project
 - [x] set up print
 - [x] Use gnu readline
 
-First forays into C ecosystem; got familiar with make, valgrind, linking. Managed to wrap my head around pointers and null-terminated strings.
+<sub>First forays into C ecosystem; got familiar with make, valgrind, linking. Managed to wrap my head around pointers and null-terminated strings.</sub>
 
-### [ ] Step 1: Read and Print
+### Step 1: Read and Print
 
-Scaffolding:
+`Scaffolding:`
 - [x] make a dynamic list data structure
 - [x] design enum-based type system
 - [x] make enum-based token type
 
 `Read :: (String) -> AST`
-[x] - make a tokenizer
-[x] - make a recursive descent parser
+- [x] make a tokenizer
+- [x] make a recursive descent parser
 
 `Print :: (AST) -> String`
-[ ] - Figure out how to pass strings and combine them
+- [ ] Figure out how to pass strings and combine them
 
