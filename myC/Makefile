@@ -3,7 +3,7 @@ CFLAGS+= `pkg-config --cflags libpcre`
 
 LDLIBS=-lreadline
 LDLIBS+= `pkg-config --libs libpcre`
-LDLIBS+=types.c linkedlist.c reader.c
+LDLIBS+=types.c tokens.c linkedlist.c reader.c
 
 all:
 	make step0_repl
@@ -13,6 +13,7 @@ test:
 	make tests/linkedlist_test
 	make tests/reader_test
 	make tests/types_test
+	make tests/tokens_test
 run_tests:
 	valgrind ./tests/types_test && \
 	valgrind ./tests/linkedlist_test && \

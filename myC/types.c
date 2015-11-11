@@ -1,5 +1,6 @@
 #include "types.h"
 
+#include "tokens.h"
 #include "linkedlist.h"
 
 #include <stdio.h>
@@ -7,7 +8,9 @@
 #include <assert.h>
 #include <string.h>
 
-LNode* ln_create_str(char const * val) {
+
+
+LNode* ln_create_str(char* val) {
   LNode* n = malloc(sizeof(LNode));
   assert(n != NULL);
 
@@ -29,6 +32,18 @@ LNode* ln_create_list(LList* val) {
   return n;
 }
 
+LNode* ln_create_tok(Token* val) {
+  LNode* n = malloc(sizeof(LNode));
+  assert(n != NULL);
+
+  n->type = TOKEN;
+  n->val = malloc(sizeof(Val));
+  n->val->tok = val;
+  n->next = NULL;
+  return n;
+}
+
+
 
 void ln_check(LNode* node) {
   assert(node != NULL);
@@ -44,6 +59,10 @@ void ln_check(LNode* node) {
     // check if valid list?
     assert(node->val->list != NULL);
     break;
+  case TOKEN:
+    // check if valid list?
+    assert(node->val->tok != NULL);
+    break;
   default:
     break;
   }
@@ -52,6 +71,9 @@ void ln_check(LNode* node) {
 void ln_free_recur(LNode* node) {
   if (node->type == LIST) {
     ll_free_recur(node->val->list);
+  }
+  if (node->type == TOKEN) {
+    tok_free(node->val->tok);
   }
   ln_free(node);
 }
@@ -73,6 +95,9 @@ void ln_print(LNode* node) {
     break;
   case LIST:
     ll_print(node->val->list);
+    break;
+  case TOKEN:
+    tok_print(node->val->tok);
     break;
   default:
     printf("?");
