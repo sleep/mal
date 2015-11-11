@@ -91,7 +91,7 @@ void test_tokenize(TestCase* tc) {
   assert(curr == NULL);
 
 
-  /* ll_free_recur(tokens); */
+  ll_free_recur(tokens);
 
   printf("\n");
 }
@@ -164,11 +164,11 @@ int main(int argc, char* argv[]) {
   printf("\n* Testing tokenize:\n");
   test(test_tokenize);
 
-  /* printf("\n* Testing reader:\n"); */
-  /* test(test_reader); */
+  printf("\n* Testing reader:\n");
+  test(test_reader);
 
-  /* printf("\n* Testing parser:\n"); */
-  /* test(test_parser); */
+  printf("\n* Testing parser:\n");
+  test(test_parser);
 
   printf("\n* Success!\n");
   return 0;

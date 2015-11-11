@@ -125,16 +125,16 @@ void ll_test_shiftunshift() {
 
 int main(int argc, char* argv[]) {
 
-  printf("\n* Testing ll_create\n");
+  printf("\n* Testing ll_create on strings\n");
   // createLList
   LList* list = ll_create();
   ll_check(list);
   ll_free_recur(list);
 
-  printf("\n* Testing ll_push, ll_pop\n");
+  printf("\n* Testing ll_push, ll_pop on strings\n");
   ll_test_pushpop();
 
-  printf("\n* Testing ll_unshift, ll_shift\n");
+  printf("\n* Testing ll_unshift, ll_shift on strings\n");
   ll_test_shiftunshift();
 
   return 0;
