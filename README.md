@@ -14,13 +14,13 @@
 - Must use only C standard library. *(and GNU readline (and libpcre..))*
 
 **Resources:**
-- [Make-a-Lisp Guide](https://github.com/sleep/mal/blob/master/process/guide.md)
+- Kanaka's [Make-a-Lisp Guide](https://github.com/sleep/mal/blob/master/process/guide.md)
 
 
 
 <br/>
 
-### Possible directions to take this...
+**Possible directions to take this**
 - Do away with standard library and readline, i.e roll my own malloc, free, strings.h, readline.
 - Go halfway with C, pick up the rest in Rust?
 
@@ -30,9 +30,15 @@
 
 ## Roadmap/Journal
 
-Implementing a self-hosting lisp interpreter has got to be one of the most pedagogically cost-effective<b>*</b> canonical projects out there. My goal is to juice as much knowledge/experience from this project, so I'm doing this project in C, a practical language most orthogonal to the interpreted, high-level languages I'm comfortable with. Having never written anything non-trivial in a non-garbage-collected language, I'm hoping this endeavor will fill in a few holes in my CS knowledge.
+### Preliminary thoughts
 
-Kanaka's Make-a-Lisp challenge gives a language-agnostic roadmap that's high-level enough to require architectural forethought on behalf of the implementer, but also clear enough to save the implementer from moments of design-decision Buridan's Assery. The making of any self-hosting compiler/interpreter is always a journey. With all explorations, there are things to be gained, things to be lost when journeying with a prescribed route. By sticking with someone else's (well-curated) route, efficiency and therefore breadth are undoubtably gained. However, one loses the sentimentality, the sense of ownership, the developing of natural sense of direction, that comes with impromptu, plan-as-you-go journeys. With that said, I've chosen to go with Kanaka's guide and treat this project more as exercise than exploration, with the latter choice saved for another time...
+Implementing a self-hosting lisp interpreter has got to be one of the most pedagogically cost-effective<b>*</b> canonical projects out there. My goal is to juice as much knowledge/experience from this exercise, so I'm doing this project in C, a practical language most orthogonal to the interpreted, high-level languages I'm comfortable with. Having never written anything non-trivial in a non-garbage-collected language, I'm hoping this endeavor will fill in a few holes in my CS knowledge.
+
+Kanaka's Make-a-Lisp challenge gives a language-agnostic roadmap that's high-level enough to require architectural forethought on behalf of the implementer, but also clear enough to save the implementer from moments of design-decision Buridan's Assery. The making of any self-hosting compiler/interpreter is surely a lengthy journey, but also one within in a vast decision space. So the question arises: do I follow this guide, or do I scout out the decision space for my own and attempt a path of my own?
+
+With all journeys, there are things to be gained, things to be lost when going with a prescribed route over making one for oneself. By sticking with someone else's (hopefully well-curated) route, efficiency in regards to breadth is undoubtedly gained. Many rewards are to be gained from such a journey, perhaps especially more of the quantifiable nature, like things learned, topic covered, landmarks visited, etc. However, one loses the thrills of risk in making one's own turns, the moments of frustration-turned-angst from making too many of the wrong ones, the natural development of a sense of direction and location, and the retrospective exaltation from self-actualization -- all of which comes with impromptu journeys: ones with perhaps no more than a fuzzy idea of destination, let alone plan.
+
+Having said that, I've chosen to develop my Lisp interpreter against Kanaka's specifications and treat this project more as a first-time PL-implementation exercise, rather than PL implementation-space exploration. I'll save the latter choice for another time, perhaps to be done concurrently as a PL *design*-space exploration...
 
 <sub>*i.e. ratio of gratification/knowledge gained over energy spent. </sub>
 
