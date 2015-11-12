@@ -9,37 +9,56 @@
 
 
 // Takes string, returns input ast
-char* READ(char* input) {
+LNode* READ(char* input) {
   Reader* r = r_create(input);
-  ll_print(r->tokens);
-  printf("\n");
-
-
-  /* LNode* root = parse(r); */
-  /* mn_print(root); */
-
-  /* LNode* n; */
-  /* while(n = r_next(r), n != NULL) { */
-  /*   ln_print(n); */
-  /* } */
-
+  LNode* root = parse(r);
   r_free(r);
-
-  return input;
+  return root;
 }
 
-// Takes input ast, returns output ast (bc homoiconic)
-char* EVAL(char* input_ast) {
-  char* output_ast = input_ast;
+// Takes input ast, returns output ast
+LNode* EVAL(LNode* input_ast) {
+  LNode* output_ast = input_ast;
+  //pass through
   return output_ast;
 }
-char* PRINT(char* ast) {
-  char* output = ast;
-  return output;
+
+char* PRINT(LNode* ast) {
+  char* str;
+  ln_asprint(ast, &str);
+  return str;
 }
 
-char* rep(char* input) {
-  return PRINT(EVAL(READ(input)));
+void rep(char* input) {
+  LNode* in_ast = READ(input);
+  if (in_ast != NULL) {
+
+    LNode* out_ast = EVAL(in_ast);
+    if (out_ast != NULL) {
+
+      char* str = PRINT(out_ast);
+      if (str != NULL) {
+        printf("%s", str);
+        printf("\n");
+
+        free(str);
+
+      }else {
+        printf("Error printing!\n");
+      }
+
+      // We skip because we pass through without a deep copy
+      /* ln_free_recur(out_ast); */
+
+    } else {
+      printf("Error evaluation!\n");
+    }
+
+    ln_free_recur(in_ast);
+
+  } else {
+    printf("Error parsing!\n");
+  }
 }
 
 
@@ -54,7 +73,7 @@ int main(int argc, char* argv[]) {
     }
     add_history(input);
 
-    READ(input);
+    rep(input);
 
     free(input);
   }

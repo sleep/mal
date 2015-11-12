@@ -110,12 +110,11 @@ void test_reader(TestCase* tc) {
   tc_print_strs(tc);
   printf("\n");
 
-  printf("READER: length: %d\n", r->tokens->length);
   printf("** Got:       ");
 
   int count = 0;
 
-  while (r_check(r), curr = r_next(r), curr !=NULL) {
+  while (r_check(r), curr = r_next(r), curr != NULL) {
     r_check(r);
     assert(next == curr); // This tests peeking
     next = r_peek(r);

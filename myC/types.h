@@ -27,12 +27,12 @@ typedef enum {
 
 
 
-typedef struct LNode LNode;
-typedef struct LList LList;
+typedef struct LNode_ LNode;
+typedef struct LList_ LList;
 
-typedef union Val Val;
+typedef union Val_ Val;
 
-union Val {
+union Val_ {
   int i;
   char* str;
   LList* list;
@@ -41,7 +41,7 @@ union Val {
 
 
 
-struct LNode {
+struct LNode_ {
   Type type;
   LNode* next;
   Val* val;
@@ -62,6 +62,9 @@ LNode* ln_create_mlist(LList* val);
 void ln_check(LNode* node);
 void ln_free(LNode* node);
 void ln_free_recur(LNode* node);
+
+//Must check ret is non-null
+void ln_asprint(LNode*, char** ret);
 void ln_print(LNode* node);
 
 #endif

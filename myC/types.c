@@ -153,36 +153,46 @@ void ln_free(LNode* node) {
 }
 
 
-void ln_print(LNode* node) {
+void ln_asprint(LNode* node, char** ret) {
   switch(node->type) {
   case INT:
-    printf("%d", node->val->i);
+    asprintf(ret, "%d", node->val->i);
     break;
   case STRING:
-    printf("\"%s\"", node->val->str);
+    asprintf(ret, "\"%s\"", node->val->str);
     break;
   case LIST:
-    ll_print(node->val->list);
+    ll_asprint(node->val->list, ret);
     break;
   case TOKEN:
-    tok_print(node->val->tok);
+    tok_asprint(node->val->tok, ret);
     break;
 
   case MNUM:
-    printf("%d", node->val->i);
+    asprintf(ret, "%d", node->val->i);
     break;
   case MSTR:
-    printf("\"%s\"", node->val->str);
+    asprintf(ret, "\"%s\"", node->val->str);
     break;
   case MSYM:
-    printf("%s", node->val->str);
+    asprintf(ret, "%s", node->val->str);
     break;
   case MLIST:
-    ll_print(node->val->list);
+    ll_asprint(node->val->list, ret);
     break;
-
   default:
-    printf("?");
+    asprintf(ret, "?");
     break;
+  }
+}
+
+void ln_print(LNode* node) {
+  char* str;
+  ln_asprint(node, &str);
+  if (str != NULL) {
+    printf("%s", str);
+    free(str);
+  }else {
+    printf("Error! out of memory!\n");
   }
 }

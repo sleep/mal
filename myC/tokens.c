@@ -55,29 +55,40 @@ void tok_free(Token* tok) {
   free(tok);
 }
 
-void tok_print(Token* tok) {
+void tok_asprint(Token* tok, char** ret) {
   assert(tok !=NULL);
   switch(tok->tt) {
   case TNUM:
-    printf("%d", tok->val->i);
+    asprintf(ret, "%d", tok->val->i);
     break;
   case TSTR:
-    printf("\"%s\"", tok->val->str);
+    asprintf(ret, "\"%s\"", tok->val->str);
     break;
   case TSYM:
-    printf("%s", tok->val->str);
+    asprintf(ret, "%s", tok->val->str);
     break;
   case TLP:
-    printf("(");
+    asprintf(ret, "(");
     break;
   case TRP:
-    printf(")");
+    asprintf(ret, ")");
     break;
   default:
-    printf("???");
+    asprintf(ret, "???");
     break;
   }
   //TODO: finish print tokens part
+}
+
+void tok_print(Token* tok) {
+  char* str;
+  tok_asprint(tok, &str);
+  if (str != NULL) {
+    printf("%s", str);
+    free(str);
+  }else {
+    printf("Error! Ran out of memory!\n");
+  }
 }
 
 

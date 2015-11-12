@@ -77,20 +77,88 @@ void ll_free(LList* list) {
   free(list);
 }
 
-void ll_print(LList* list) {
+void ll_asprint(LList* list, char** ret) {
   if (list->length == 0) {
-    printf("()");
+    asprintf(ret, "()");
     return;
   }
-  LNode* curr = list->head;
-  printf("(");
-  for (int i = 0; i < list->length -1; i++) {
-    ln_print(curr);
-    curr = curr->next;
-    printf(" ");
+  //TODO: error check asprintf
+
+  // populate strings
+  char** strs = malloc(sizeof(char*) * list->length);
+  if (strs != NULL) {
+    LNode* curr = list->head;
+
+    int tchars = 0;
+    tchars += 1; // "("
+
+    for (int i = 0; i < list->length; i++) {
+      ln_asprint(curr, &strs[i]);
+
+      tchars += strlen(strs[i]);
+      tchars += 1;
+
+      curr = curr->next;
+    }
+
+    /* for (int i = 0; i < list->length; i++) { */
+    /*   printf("\nstrs[%d]: %s\n", i, strs[i]); */
+    /* } */
+
+    //concat strings
+    char* output = malloc(tchars + 1);
+    if (output!= NULL) {
+      int pos = 0;
+
+      output[0] = '(';
+      pos += 1;
+
+      int i;
+      for (i = 0; i < (list->length - 1); i++) {
+        memcpy(&(output[pos]), strs[i], strlen(strs[i]));
+        pos += strlen(strs[i]);
+        free(strs[i]); //done with it, can free.
+
+        output[pos] = ' ';
+        pos +=1;
+      }
+      memcpy(&(output[pos]), strs[i], strlen(strs[i]));
+      pos += strlen(strs[i]);
+      free(strs[i]); //done with it, can free.
+
+      output[pos] = ')';
+      pos += 1;
+
+      output[pos] = '\0';
+      pos += 1;
+
+      assert(pos == tchars+1);
+
+      *ret = output;
+    } else {
+      printf("ERROR: Ran out of memory!\n");
+      for (int i = 0; i < list->length; i ++){
+        free(strs[i]);
+      }
+      ret = NULL;
+    }
+
+    free(strs);
+  } else {
+    printf("ERROR: Ran out of memory!\n");
+    ret = NULL;
   }
-  ln_print(curr);
-  printf(")");
+}
+
+void ll_print(LList* list) {
+  char* str;
+  ll_asprint(list, &str);
+  if (str != NULL) {
+    printf("%s", str);
+    free(str);
+  }else {
+    printf("Error! out of memory!\n");
+  }
 }
 
 
@@ -171,7 +239,7 @@ void ll_unshift(LList* list, LNode* node) {
   if (list->length == 0) {
     list->head = node;
     list->length = 1;
-  }else {
+  } else {
     LNode* newhead = node;
     newhead->next = list->head;
 

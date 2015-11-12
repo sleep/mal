@@ -183,9 +183,13 @@ int r_accept(Reader* r, TokenType expected) {
 /* //TODO: move AST to another file */
 LNode* parse(Reader* r) {
   Token* curr = r_peek(r);
-  if (curr->tt == TLP) {
+  if (curr == NULL) return NULL;
+
+  if (curr->tt == TLP)
     return parse_list(r);
-  }
+  if (curr->tt == TRP)
+    return NULL;
+
   return parse_atom(r);
 }
 
@@ -207,12 +211,12 @@ LNode* parse_list(Reader* r) {
       ll_push(list, atom);
     }
 
-    //something went wrong...
-    ll_free(list);
-    ln_free(output);
+    //Reach end, error parsing
+    ln_free_recur(output);
+    return (LNode*) NULL;
   }
-
-  return (LNode*) NULL;
+  printf("ERROR!: Expected left parenthesis!\n");
+  exit(1);
 }
 
 LNode* parse_atom(Reader* r) {
@@ -227,9 +231,8 @@ LNode* parse_atom(Reader* r) {
   case TSTR:
     return ln_create_mstr(curr->val->str);
   default:
-    printf("\n\nSomething went wrong!! %d\n\n", curr->tt);
-    assert(0);
-    return (LNode*)NULL;
+    printf("ERROR!: Expected atom token!\n");
+    exit(1);
   }
 
 }

@@ -5,8 +5,8 @@
 
 LList* tokenize(char* input);
 
-typedef struct Reader Reader;
-struct Reader {
+typedef struct Reader_ Reader;
+struct Reader_ {
   LList* tokens;
   LNode* curr;
   int pos;
