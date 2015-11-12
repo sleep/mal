@@ -21,7 +21,7 @@
 <br/>
 
 **Possible directions to take this**
-- Do away with standard library and readline, i.e roll my own malloc, free, strings.h, readline.
+- Do away with standard library, readline, pcre, i.e roll my own malloc, free, strings.h, readline.h ,pcre.h
 - Go halfway with C, pick up the rest in Rust?
 
 <br/>
@@ -34,11 +34,10 @@
 
 Implementing a self-hosting lisp interpreter has got to be one of the most pedagogically cost-effective<b>*</b> canonical projects out there. My goal is to juice as much knowledge/experience from this exercise, so I'm doing this project in C, a practical language most orthogonal to the interpreted, high-level languages I'm comfortable with. Having never written anything non-trivial in a non-garbage-collected language, I'm hoping this endeavor will fill in a few holes in my CS knowledge.
 
-Kanaka's Make-a-Lisp challenge gives a language-agnostic roadmap that's high-level enough to require architectural forethought on behalf of the implementer, but also clear enough to save the implementer from moments of design-decision Buridan's Assery. The making of any self-hosting compiler/interpreter is surely a lengthy journey, but also one within in a vast decision space. So the question arises: do I follow this guide, or do I scout out the decision space for my own and attempt a path of my own?
+The making of any self-hosting compiler/interpreter is surely a lengthy journey, but also one within in a vast decision space. 
+Fortunately, Kanaka's Make-a-Lisp challenge gives a language-agnostic roadmap that's high-level enough to require architectural forethought on behalf of the implementer, but also clear enough to save the implementer from moments of design-decision Buridan's Assery.
 
-With all journeys, there are things to be gained, things to be lost when going with a prescribed route over making one for oneself. By sticking with someone else's (hopefully well-curated) route, efficiency in regards to breadth is undoubtedly gained. Many rewards are to be gained from such a journey, perhaps especially more of the quantifiable nature, like things learned, topic covered, landmarks visited, etc. However, one loses the thrills of risk in making one's own turns, the moments of frustration-turned-angst from making too many of the wrong ones, the natural development of a sense of direction and location, and an exalting feelings of self-actualization at the end -- all of which comes with more impromptu journeys.
-
-Having said that, I've chosen to develop my Lisp interpreter against Kanaka's specifications and treat this project more as a first-time PL-implementation exercise, rather than PL implementation-space exploration. I'll save the latter choice for another time, perhaps to be done concurrently as a PL *design*-space exploration...
+I've chosen to develop my Lisp interpreter against Kanaka's specifications and treat this project more as a PL-implementation exercise, rather than PL implementation-space exploration. I'll save the latter choice for another time, perhaps to be done concurrently as a PL *design*-space exploration...
 
 <sub>*i.e. ratio of gratification/knowledge gained over energy spent. </sub>
 
@@ -63,6 +62,7 @@ First forays into C ecosystem; got familiar with make, valgrind, linking. Manage
 - [x] make a recursive descent parser
 
 `Print :: (AST) -> String`
-- [ ] Figure out how to pass strings and combine them
+- [x] implement a way to get string representation of nodes
 
-Figured out more of the mess regarding C declaration syntax. Dealt with const correctectness. Getting the hang of heap vs stack. Grokking function pointers for testing.
+Figured out more of the mess regarding C declaration syntax. Dealt with const correctectness. Getting the hang of heap vs stack. Grokking function pointers for testing. Immersed myself in `strings.h`.
+I've decided to deal with dynamic strings closer to the metal with `char**`'s, instead of wrapper objects. This is the technique `asprintf` uses to write strings without knowing the length of strings to preallocate a buffer.

@@ -183,9 +183,10 @@ int r_accept(Reader* r, TokenType expected) {
 /* //TODO: move AST to another file */
 LNode* parse(Reader* r) {
   Token* curr = r_peek(r);
-  if (curr->tt == TLP) {
+  if (curr->tt == TLP)
     return parse_list(r);
-  }
+  if (curr->tt == TRP)
+    return NULL;
   return parse_atom(r);
 }
 
