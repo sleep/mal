@@ -39,6 +39,7 @@ void rep(char* input) {
       char* str = PRINT(out_ast);
       if (str != NULL) {
         printf("%s", str);
+        printf("\n");
 
         free(str);
 
@@ -46,7 +47,8 @@ void rep(char* input) {
         printf("Error printing!\n");
       }
 
-      ln_free_recur(out_ast);
+      // We skip because we pass through without a deep copy
+      /* ln_free_recur(out_ast); */
 
     } else {
       printf("Error evaluation!\n");
