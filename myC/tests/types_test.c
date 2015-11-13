@@ -96,14 +96,14 @@ void ln_test_nested_lists() {
   ln_free_recur(root);
 }
 
-void ln_test_mnum() {
+void ln_test_mint() {
   printf("\n** Testing LNode of mal number\n");
-  LNode* head = ln_create_mnum(347);
+  LNode* head = ln_create_mint(347);
   ln_check(head);
   ln_print(head);
   printf("\n");
 
-  head->next = ln_create_mnum(262);
+  head->next = ln_create_mint(262);
   ln_check(head);
   ln_check(head->next);
   ln_print(head->next);
@@ -183,7 +183,7 @@ int main(int argc, char* argv[]) {
   ln_test_list();
   ln_test_nested_lists();
 
-  ln_test_mnum();
+  ln_test_mint();
   ln_test_mstr();
   ln_test_msym();
   ln_test_mlist();

@@ -10,7 +10,7 @@
 
 
 //returns partially valid LNode...
-LNode* ln_create(Type T) {
+LNode* ln_create_shell(Type T) {
   LNode* n = malloc(sizeof(LNode));
   assert(n != NULL);
   n->type = T;
@@ -23,24 +23,24 @@ LNode* ln_create(Type T) {
 // normal types
 
 LNode* ln_create_int(int val) {
-  LNode* n = ln_create(INT);
+  LNode* n = ln_create_shell(INT);
   n->val->i = val;
   return n;
 }
 
 LNode* ln_create_str(char* val) {
-  LNode* n = ln_create(STRING);
+  LNode* n = ln_create_shell(STRING);
   n->val->str = strdup(val);
   return n;
 }
 
 LNode* ln_create_list(LList* val) {
-  LNode* n = ln_create(LIST);
+  LNode* n = ln_create_shell(LIST);
   n->val->list = val;
   return n;
 }
 LNode* ln_create_tok(Token* val) {
-  LNode* n = ln_create(TOKEN);
+  LNode* n = ln_create_shell(TOKEN);
   n->val->tok= val;
   return n;
 }
@@ -48,27 +48,45 @@ LNode* ln_create_tok(Token* val) {
 
 // mal types
 
-LNode* ln_create_mnum(int val) {
-  LNode* n = ln_create(MNUM);
+LNode* ln_create_mint(int val) {
+  LNode* n = ln_create_shell(MINT);
   n->val->i = val;
   return n;
 }
 
 LNode* ln_create_mstr(char* val) {
-  LNode* n = ln_create(MSTR);
+  LNode* n = ln_create_shell(MSTR);
   n->val->str = strdup(val); // do we want to dup?
   return n;
 }
 
 LNode* ln_create_msym(char* val) {
-  LNode* n = ln_create(MSYM);
+  LNode* n = ln_create_shell(MSYM);
   n->val->str = strdup(val); //do we want to dup?
+  return n;
+}
+
+LNode* ln_create_mkwrd(char* val) {
+  LNode* n = ln_create_shell(MKWRD);
+  n->val->str = strdup(val); // do we want to dup?
   return n;
 }
 
 
 LNode* ln_create_mlist(LList* val) {
-  LNode* n = ln_create(MLIST);
+  LNode* n = ln_create_shell(MLIST);
+  n->val->list = val;
+  return n;
+}
+
+LNode* ln_create_mvec(LList* val) {
+  LNode* n = ln_create_shell(MVEC);
+  n->val->list = val;
+  return n;
+}
+
+LNode* ln_create_mmap(LList* val) {
+  LNode* n = ln_create_shell(MMAP);
   n->val->list = val;
   return n;
 }
@@ -98,7 +116,11 @@ void ln_check(LNode* node) {
 
     //Mal types:
 
-  case MNUM:
+  case MINT:
+    break;
+  case MKWRD:
+    //check is keyword?
+    assert(node->val->str != NULL);
     break;
   case MSTR:
     //check is string?
@@ -112,19 +134,27 @@ void ln_check(LNode* node) {
     //check is valid list?
     assert(node->val->list != NULL);
     break;
+  case MMAP:
+    // check is valid map?
+    assert(node->val->list != NULL);
+    break;
+  case MVEC:
+    // check is valid vec?
+    assert(node->val->list != NULL);
+    break;
   }
 }
 
 void ln_free_recur(LNode* node) {
   assert(node != NULL);
   switch(node->type) {
-  case LIST:
-    ll_free_recur(node->val->list);
-    break;
   case TOKEN:
     tok_free(node->val->tok);
     break;
+  case LIST:
   case MLIST:
+  case MVEC:
+  case MMAP:
     ll_free_recur(node->val->list);
     break;
   default: break;
@@ -137,20 +167,18 @@ void ln_free(LNode* node) {
 
   switch(node->type) {
   case STRING:
-    free(node->val->str);
-    break;
+  case MKWRD:
   case MSTR:
-    free(node->val->str);
-    break;
   case MSYM:
     free(node->val->str);
     break;
-  case MNUM:
+  case MINT:
   default: break;
   }
   free(node->val);
   free(node);
 }
+
 
 
 void ln_asprint(LNode* node, char** ret) {
@@ -168,14 +196,23 @@ void ln_asprint(LNode* node, char** ret) {
     tok_asprint(node->val->tok, ret);
     break;
 
-  case MNUM:
+  case MINT:
     asprintf(ret, "%d", node->val->i);
+    break;
+  case MKWRD:
+    asprintf(ret, ":%s", node->val->str);
     break;
   case MSTR:
     asprintf(ret, "\"%s\"", node->val->str);
     break;
   case MSYM:
     asprintf(ret, "%s", node->val->str);
+    break;
+  case MVEC:
+    ll_asprint(node->val->list, ret);
+    break;
+  case MMAP:
+    ll_asprint(node->val->list, ret);
     break;
   case MLIST:
     ll_asprint(node->val->list, ret);

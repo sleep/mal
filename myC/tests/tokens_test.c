@@ -10,34 +10,40 @@
 typedef struct TestCase TestCase;
 struct TestCase {
   char** input;
+  int ilength;
+
   Token** tokens;
-  int length;
+  int olength;
 };
 
 static TestCase case0 = (TestCase){
-  .input = (char*[]){"(", ")"},
+  .input = (char*[]){"(", ")", ";blah blah blah"},
+  .ilength = 3,
+
   .tokens = (Token*[]) {
     &(Token){.tt = TLP},
     &(Token){.tt = TRP}
   },
-  .length = 2
+  .olength = 2
 };
 
 static TestCase case1 = (TestCase){
-  .input = (char*[]){"(", "+", "(", "1", ")", "(", "123", "\"Hello!\"", ")", ")"},
+  .input = (char*[]){"(", "+", "[", "1", "]", "{", "123", "\"Hello!\"", "}", ")"},
+  .ilength = 10,
+
   .tokens = (Token*[]) {
     &(Token){.tt = TLP},
     &(Token){.tt = TSYM, .val=&(TokVal){.str="+"}},
-    &(Token){.tt = TLP},
-    &(Token){.tt = TNUM, .val=&(TokVal){.i=1}},
-    &(Token){.tt = TRP},
-    &(Token){.tt = TLP},
-    &(Token){.tt = TNUM, .val=&(TokVal){.i=123}},
+    &(Token){.tt = TLSQR},
+    &(Token){.tt = TINT, .val=&(TokVal){.i=1}},
+    &(Token){.tt = TRSQR},
+    &(Token){.tt = TLCUR},
+    &(Token){.tt = TINT, .val=&(TokVal){.i=123}},
     &(Token){.tt = TSTR, .val=&(TokVal){.str="Hello!"}},
-    &(Token){.tt = TRP},
+    &(Token){.tt = TRCUR},
     &(Token){.tt = TRP}
   },
-  .length = 10
+  .olength = 10
 };
 
 
@@ -54,7 +60,7 @@ void test(TestFunc test_func) {
 
 void tc_print(TestCase* tc) {
   int i;
-  for (i = 0; i < tc->length-1; i++) {
+  for (i = 0; i < tc->ilength-1; i++) {
     printf("\"%s\", ", tc->input[i]);
   }
   printf("\"%s\"", tc->input[i]);
@@ -67,16 +73,22 @@ void test_creation(TestCase* tc) {
 
   printf("** GOT:   ");
   // create and print
-  Token** tokens = malloc(sizeof(Token) * tc->length);
+  Token** tokens = malloc(sizeof(Token) * tc->olength);
   int i;
-  for (i = 0; i < tc->length; i++) {
+  for (i = 0; i < tc->olength; i++) {
     printf("\"");
     if (tc->tokens[i]->val != NULL) {
-      if (tc->tokens[i]->tt == TNUM){
-
+      switch(tc->tokens[i]->tt) {
+      case TINT:
         tokens[i] = tok_create(tc->tokens[i]->tt, tc->tokens[i]->val->i, NULL);
-      }else {
+        break;
+      case TSTR:
+        //TODO: add quotes here to end and begninning
         tokens[i] = tok_create(tc->tokens[i]->tt, 0, tc->tokens[i]->val->str);
+        break;
+      default:
+        tokens[i] = tok_create(tc->tokens[i]->tt, 0, tc->tokens[i]->val->str);
+        break;
       }
     }else {
       tokens[i] = tok_create(tc->tokens[i]->tt, 0, NULL);
@@ -87,7 +99,7 @@ void test_creation(TestCase* tc) {
   printf("\n\n");
 
 
-  for (int i = 0; i < tc->length; i++) {
+  for (int i = 0; i < tc->olength; i++) {
     tok_free(tokens[i]);
   }
 
@@ -101,14 +113,14 @@ void test_parse(TestCase* tc) {
 
   printf("** GOT:   ");
 
-  Token** tokens = malloc(sizeof(Token) * tc->length);
+  Token** tokens = malloc(sizeof(Token) * tc->olength);
   int i;
-  for (i = 0; i < tc->length; i++) {
+  for (i = 0; i < tc->olength; i++) {
     printf("\"");
     tokens[i] = tok_parse(tc->input[i]);
 
     tok_assert_equals(tokens[i], tc->tokens[i]);
-    assert(tok_equals(tokens[i], tc->tokens[i]));
+    /* assert(tok_equals(tokens[i], tc->tokens[i])); */
 
 
     tok_print(tokens[i]);
@@ -117,7 +129,7 @@ void test_parse(TestCase* tc) {
   printf("\n\n");
 
 
-  for (int i = 0; i < tc->length; i++) {
+  for (int i = 0; i < tc->olength; i++) {
     tok_free(tokens[i]);
   }
 

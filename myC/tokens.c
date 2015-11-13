@@ -11,9 +11,10 @@ Token* tok_create(TokenType tt, int i, char* str) {
   tok->tt = tt;
 
 
+  int j;
   // fill values, if exists
   switch(tt) {
-  case TNUM:
+  case TINT:
     tok->val = malloc(sizeof(TokVal));
     tok->val->i = i;
     break;
@@ -21,15 +22,22 @@ Token* tok_create(TokenType tt, int i, char* str) {
     tok->val = malloc(sizeof(TokVal));
     tok->val->str = strdup(str);
     break;
+  case TKWRD:
+    tok->val = malloc(sizeof(TokVal));
+    tok->val->str = malloc(strlen(str) + 1 - 1);
+    for (j = 0; j < strlen(str)-1; j++) {
+      tok->val->str[j] = str[j+1];
+    }
+    tok->val->str[j] = '\0';
+    break;
   case TSTR:
     tok->val = malloc(sizeof(TokVal));
     //manual copy... spent a whole hour debugging sprintf/sscanf
     tok->val->str = malloc(strlen(str) + 1 - 2);
-    int i;
-    for (i = 0; i < strlen(str)-2; i++) {
-      tok->val->str[i] = str[i+1];
+    for (j = 0; j < strlen(str)-2; j++) {
+      tok->val->str[j] = str[j+1];
     }
-    tok->val->str[i] = '\0';
+    tok->val->str[j] = '\0';
 
     break;
   default:
@@ -41,9 +49,10 @@ Token* tok_create(TokenType tt, int i, char* str) {
 
 void tok_free(Token* tok) {
   switch(tok->tt) {
-  case TNUM:
+  case TINT:
     free(tok->val);
     break;
+  case TKWRD:
   case TSYM:
   case TSTR:
     free(tok->val->str);
@@ -56,10 +65,16 @@ void tok_free(Token* tok) {
 }
 
 void tok_asprint(Token* tok, char** ret) {
-  assert(tok !=NULL);
+  if (tok == NULL) {
+    asprintf(ret, "EOF");
+    return;
+  }
   switch(tok->tt) {
-  case TNUM:
+  case TINT:
     asprintf(ret, "%d", tok->val->i);
+    break;
+  case TKWRD:
+    asprintf(ret, ":%s", tok->val->str);
     break;
   case TSTR:
     asprintf(ret, "\"%s\"", tok->val->str);
@@ -72,6 +87,18 @@ void tok_asprint(Token* tok, char** ret) {
     break;
   case TRP:
     asprintf(ret, ")");
+    break;
+  case TLSQR:
+    asprintf(ret, "[");
+    break;
+  case TRSQR:
+    asprintf(ret, "]");
+    break;
+  case TLCUR:
+    asprintf(ret, "{");
+    break;
+  case TRCUR:
+    asprintf(ret, "}");
     break;
   default:
     asprintf(ret, "???");
@@ -94,17 +121,23 @@ void tok_print(Token* tok) {
 
 //takes regex output and returns Tokens
 Token* tok_parse(char* str) {
+  if (str[0] == ';') return NULL; //reject comments
+
   if (str[0] == '(') return tok_create(TLP, 0, NULL);
   if (str[0] == ')') return tok_create(TRP, 0, NULL);
+  if (str[0] == '{') return tok_create(TLCUR, 0, NULL);
+  if (str[0] == '}') return tok_create(TRCUR, 0, NULL);
+  if (str[0] == '[') return tok_create(TLSQR, 0, NULL);
+  if (str[0] == ']') return tok_create(TRSQR, 0, NULL);
 
+  if (str[0] == ':') return tok_create(TKWRD, 0, str);
   if (str[0] == '"') return tok_create(TSTR, 0, str);
 
   if (isdigit(str[0])){
     int i = 0;
     sscanf(str, "%d", &i);
-    return tok_create(TNUM, i, NULL);
+    return tok_create(TINT, i, NULL);
   }
-
 
   // else
   return tok_create(TSYM, 0, str);
@@ -114,10 +147,11 @@ int tok_equals(Token* a, Token* b) {
   if (a->tt != b->tt) return 0;
 
   switch(a->tt) {
-  case TNUM:
+  case TINT:
     assert(a->val != NULL && b->val != NULL);
     return a->val->i == b->val->i;
     break;
+  case TKWRD:
   case TSTR:
   case TSYM:
     assert(a->val != NULL && b->val != NULL);
@@ -131,9 +165,14 @@ void tok_assert_equals(Token* a, Token* b) {
   assert(a->tt == b->tt);
 
   switch(a->tt) {
-  case TNUM:
+  case TINT:
     assert(a->val != NULL && b->val != NULL);
     assert(a->val->i == b->val->i);
+    break;
+  case TKWRD:
+    assert(a->val != NULL && b->val != NULL);
+    assert(strlen(a->val->str) == strlen(b->val->str));
+    assert(strcmp(a->val->str, b->val->str) == 0);
     break;
   case TSTR:
     assert(a->val != NULL && b->val != NULL);

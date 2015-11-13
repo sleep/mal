@@ -15,7 +15,14 @@ struct TestCase {
 };
 
 static TestCase case0 = (TestCase){
-  .input = "(      )",
+  .input = ";hahahaha h a h a h ah",
+  .strs = (char*[]){},
+  .tokens = (Token*[]) {
+  },
+  .length = 0
+};
+static TestCase case1 = (TestCase){
+  .input = "(      );b a d a s df +; a ; ",
   .strs = (char*[]){"(", ")"},
   .tokens = (Token*[]) {
     &(Token){.tt = TLP},
@@ -24,17 +31,17 @@ static TestCase case0 = (TestCase){
   .length = 2
 };
 
-static TestCase case1 = (TestCase){
+static TestCase case2 = (TestCase){
   .input = "(+ (1) (123 \"Hello!\" ))",
   .strs= (char*[]){"(", "+", "(", "1", ")", "(", "123", "\"Hello!\"", ")", ")"},
   .tokens = (Token*[]) {
     &(Token){.tt = TLP},
     &(Token){.tt = TSYM, .val=&(TokVal){.str="+"}},
     &(Token){.tt = TLP},
-    &(Token){.tt = TNUM, .val=&(TokVal){.i=1}},
+    &(Token){.tt = TINT, .val=&(TokVal){.i=1}},
     &(Token){.tt = TRP},
     &(Token){.tt = TLP},
-    &(Token){.tt = TNUM, .val=&(TokVal){.i=123}},
+    &(Token){.tt = TINT, .val=&(TokVal){.i=123}},
     &(Token){.tt = TSTR, .val=&(TokVal){.str="Hello!"}},
     &(Token){.tt = TRP},
     &(Token){.tt = TRP}
@@ -42,7 +49,7 @@ static TestCase case1 = (TestCase){
   .length = 10
 };
 
-static TestCase* cases[] = {&case0, &case1};
+static TestCase* cases[] = {&case0, &case1, &case2};
 
 
 typedef void (*TestFunc) (TestCase*);
@@ -130,9 +137,12 @@ void test_reader(TestCase* tc) {
   }
   if (count > 0) {
     printf("\b");
+  }else {
+    printf("...");
   }
   printf("\n");
   assert(count == tc->length);
+
 
   r_free(r);
   printf("\n");
@@ -145,14 +155,15 @@ void test_parser (TestCase* tc) {
 
   LNode* output = parse(r);
 
-  /* if (output == NULL) { */
-  /*   printf("** output: ERROR PARSING!!\n"); */
-  /* }else { */
-  printf("**  Output: ");
-  ln_print(output);
-  printf("\n");
+  if (output == NULL) {
+    printf("**  Output: ... \n");
+  }else {
+    printf("**  Output: ");
+    ln_print(output);
+    printf("\n");
 
-  ln_free_recur(output);
+    ln_free_recur(output);
+  }
   r_free(r);
 }
 
