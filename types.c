@@ -180,33 +180,6 @@ void ln_free(LNode* node) {
 }
 
 
-void ln_asprint_msym(char* symstr, char** ret) {
-  if (strcmp(symstr, "'") == 0) {
-    asprintf(ret, "quote");
-    return;
-  }
-
-  if (strcmp(symstr, "`") == 0) {
-    asprintf(ret, "quasiquote");
-    return;
-  }
-
-  if (strcmp(symstr, "~") == 0) {
-    asprintf(ret, "unquote");
-    return;
-  }
-
-  if (strcmp(symstr, "~@") == 0) {
-    asprintf(ret, "splice-unquote");
-    return;
-  }
-
-  if (strcmp(symstr, "@") == 0) {
-    asprintf(ret, "deref");
-    return;
-  }
-  asprintf(ret, "%s", symstr);
-}
 
 void ln_asprint(LNode* node, char** ret) {
   switch(node->type) {
@@ -233,7 +206,7 @@ void ln_asprint(LNode* node, char** ret) {
     asprintf(ret, "\"%s\"", node->val->str);
     break;
   case MSYM:
-    ln_asprint_msym(node->val->str, ret);
+    asprintf(ret, "%s", node->val->str);
     break;
   case MVEC:
     ll_asprint(node->val->list, ret);
