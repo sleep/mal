@@ -12,19 +12,15 @@ union TokVal {
 typedef enum TokenType {
   TLP,
   TRP,
-  /* TLSQR, */
-  /* TRSQR, */
-  /* TCUR, */
-  /* TRCUR, */
+  TLSQR,
+  TRSQR,
+  TLCUR,
+  TRCUR,
 
-  /* TAT, */
-  /* TBANG, */
-
-
-  TNUM,
-  TSTR,
+  TINT,
   TSYM,
-
+  TSTR,
+  TKWRD,
 } TokenType;
 
 typedef struct Token {

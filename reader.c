@@ -69,9 +69,10 @@ LList* tokenize(char* input) {
 
       char* unconsted = strdup(tokstr);
       Token* tok = tok_parse(unconsted);
-      LNode* ln = ln_create_tok(tok);
-
-      ll_push(tokens, ln);
+      if (tok != NULL) {
+        LNode* ln = ln_create_tok(tok);
+        ll_push(tokens, ln);
+      }
       free(unconsted);
       pcre_free_substring(tokstr);
 
@@ -185,12 +186,27 @@ LNode* parse(Reader* r) {
   Token* curr = r_peek(r);
   if (curr == NULL) return NULL;
 
-  if (curr->tt == TLP)
+  switch(curr->tt) {
+  case TLP:
     return parse_list(r);
-  if (curr->tt == TRP)
-    return NULL;
+  case TLSQR:
+    return parse_vec(r);
+  case TLCUR:
+    return parse_map(r);
 
-  return parse_atom(r);
+  case TRP:
+    printf("; unexpected token ");
+    tok_print(curr);
+    printf("\n");
+    return (LNode*) NULL;
+  case TRSQR:
+    return (LNode*) NULL;
+  case TRCUR:
+    return (LNode*) NULL;
+
+  default:
+    return parse_atom(r);
+  }
 }
 
 // recursive descent parser
@@ -203,7 +219,7 @@ LNode* parse_list(Reader* r) {
 
     while(curr = r_peek(r), curr != NULL) {
       if (curr->tt == TRP) {
-        r_accept(r, TLP);
+        r_accept(r, TRP);
         return output; //yay!
       }
 
@@ -212,10 +228,73 @@ LNode* parse_list(Reader* r) {
     }
 
     //Reach end, error parsing
+    //TODO: return error code?
+
+    printf("; expected ')', got");
+    tok_print(curr);
+    printf("\n");
     ln_free_recur(output);
     return (LNode*) NULL;
   }
-  printf("ERROR!: Expected left parenthesis!\n");
+  printf("; fatal: expected '('");
+  exit(1);
+}
+
+// recursive descent parser
+LNode* parse_vec(Reader* r) {
+  if (r_accept(r, TLSQR)) {
+    Token* curr;
+
+    LList* list = ll_create();
+    LNode* output = ln_create_list(list);
+
+    while(curr = r_peek(r), curr != NULL) {
+      if (curr->tt == TRSQR) {
+        r_accept(r, TRSQR);
+        return output; //yay!
+      }
+
+      LNode* atom = parse(r);
+      ll_push(list, atom);
+    }
+
+    //Reach end, error parsing
+    //TODO: return error code?
+
+    printf("; expected ']', got EOF\n");
+    ln_free_recur(output);
+    return (LNode*) NULL;
+  }
+  printf("; fatal: expected '['");
+  exit(1);
+}
+
+// recursive descent parser
+LNode* parse_map(Reader* r) {
+  if (r_accept(r, TLCUR)) {
+    Token* curr;
+
+    LList* list = ll_create();
+    LNode* output = ln_create_list(list);
+
+    while(curr = r_peek(r), curr != NULL) {
+      if (curr->tt == TRCUR) {
+        r_accept(r, TRCUR);
+        return output; //yay!
+      }
+
+      LNode* atom = parse(r);
+      ll_push(list, atom);
+    }
+
+    //Reach end, error parsing
+    //TODO: return error code?
+
+    printf("; expected '}', got EOF\n");
+    ln_free_recur(output);
+    return (LNode*) NULL;
+  }
+  printf("; fatal: expected '{'");
   exit(1);
 }
 
@@ -224,15 +303,16 @@ LNode* parse_atom(Reader* r) {
   assert(curr != NULL);
 
   switch(curr->tt) {
-  case TNUM:
-    return ln_create_mnum(curr->val->i);
+  case TINT:
+    return ln_create_mint(curr->val->i);
+  case TKWRD:
+    return ln_create_mkwrd(curr->val->str);
   case TSYM:
     return ln_create_msym(curr->val->str);
   case TSTR:
     return ln_create_mstr(curr->val->str);
   default:
-    printf("ERROR!: Expected atom token!\n");
-    exit(1);
+    printf("; unexpected token %s\n", curr->val->str);
+    return (LNode*) NULL;
   }
-
 }

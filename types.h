@@ -16,13 +16,16 @@ typedef enum {
   TOKEN,
 
 
-  MNUM,
+  MINT,
   MSTR,
   MSYM,
-  MLIST
-  /* M_KEYWORD, */
-  /* M_VECTOR,  */
-  /* M_HASHMAP*/
+  MKWRD,
+
+  MLIST,
+  MVEC,
+  MMAP,
+
+
 } Type;
 
 
@@ -54,16 +57,22 @@ LNode* ln_create_str(char* val);
 LNode* ln_create_list(LList* val);
 LNode* ln_create_tok(Token* val);
 
-LNode* ln_create_mnum(int val);
+
+
+LNode* ln_create_mint(int val);
 LNode* ln_create_mstr(char* val);
 LNode* ln_create_msym(char* val);
+LNode* ln_create_mkwrd(char* val);
+
 LNode* ln_create_mlist(LList* val);
+LNode* ln_create_mvec(LList* val); // TODO: Implement mvec
+LNode* ln_create_mmap(LList* val); // TODO: Implement mmap
 
 void ln_check(LNode* node);
 void ln_free(LNode* node);
 void ln_free_recur(LNode* node);
 
-//Must check ret is non-null
+//Must check ret != NULL
 void ln_asprint(LNode*, char** ret);
 void ln_print(LNode* node);
 

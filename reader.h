@@ -23,6 +23,8 @@ Token* r_next(Reader* r);
 
 LNode* parse(Reader* r);
 LNode* parse_list(Reader* r);
+LNode* parse_vec(Reader* r);
+LNode* parse_map(Reader* r);
 LNode* parse_atom(Reader* r);
 
 #endif

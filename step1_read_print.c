@@ -57,7 +57,7 @@ void rep(char* input) {
     ln_free_recur(in_ast);
 
   } else {
-    printf("Error parsing!\n");
+    /* printf("Error parsing!\n"); */
   }
 }
 
