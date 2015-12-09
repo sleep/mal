@@ -16,7 +16,7 @@ mal_TEST_OPTS = --start-timeout 60 --test-timeout 120
 # Settings
 #
 
-IMPLS = awk bash c clojure coffee cpp crystal cs erlang elixir es6 factor forth fsharp go groovy \
+IMPLS = awk bash c d clojure coffee cpp crystal cs erlang elixir es6 factor forth fsharp go groovy \
 	guile haskell java julia js kotlin lua make mal ocaml matlab miniMAL nim \
 	perl php ps python r racket rpython ruby rust scala swift tcl vb vimscript \
 	myC
@@ -38,6 +38,7 @@ EXCLUDE_TESTS += test^bash^step5 # no stack exhaustion or completion
 EXCLUDE_TESTS += test^c^step5    # segfault
 EXCLUDE_TESTS += test^cpp^step5  # completes at 10,000
 EXCLUDE_TESTS += test^cs^step5   # fatal stack overflow fault
+EXCLUDE_TESTS += test^d^step5    # completes at 10,000, fatal stack overflow at 1,000,000
 EXCLUDE_TESTS += test^erlang^step5 # erlang is TCO, test passes
 EXCLUDE_TESTS += test^elixir^step5 # elixir is TCO, test passes
 EXCLUDE_TESTS += test^fsharp^step5 # completes at 10,000, fatal stack overflow at 100,000
@@ -66,6 +67,7 @@ STEP_TEST_FILES = $(strip $(wildcard $(1)/tests/$($(2)).mal) $(wildcard tests/$(
 awk_STEP_TO_PROG =     awk/$($(1)).awk
 bash_STEP_TO_PROG =    bash/$($(1)).sh
 c_STEP_TO_PROG =       c/$($(1))
+d_STEP_TO_PROG =       d/$($(1))
 clojure_STEP_TO_PROG = clojure/src/$($(1)).clj
 coffee_STEP_TO_PROG =  coffee/$($(1)).coffee
 cpp_STEP_TO_PROG =     cpp/$($(1))
@@ -119,6 +121,7 @@ export FACTOR_ROOTS := .
 awk_RUNSTEP =     awk -O -f ../$(2) $(3)
 bash_RUNSTEP =    bash ../$(2) $(3)
 c_RUNSTEP =       ../$(2) $(3)
+d_RUNSTEP =       ../$(2) $(3)
 clojure_RUNSTEP = lein with-profile +$(1) trampoline run $(3)
 coffee_RUNSTEP =  coffee ../$(2) $(3)
 cpp_RUNSTEP =     ../$(2) $(3)
@@ -192,8 +195,12 @@ IMPL_PERF = $(filter-out $(EXCLUDE_PERFS),$(foreach impl,$(DO_IMPLS),perf^$(impl
 #
 
 # Build a program in an implementation directory
+# Make sure we always try and build first because the dependencies are
+# encoded in the implementation Makefile not here
+.PHONY: $(foreach i,$(DO_IMPLS),$(foreach s,$(STEPS),$(call $(i)_STEP_TO_PROG,$(s))))
 $(foreach i,$(DO_IMPLS),$(foreach s,$(STEPS),$(call $(i)_STEP_TO_PROG,$(s)))):
-	$(MAKE) -C $(dir $(@)) $(notdir $(@))
+	$(foreach impl,$(word 1,$(subst /, ,$(@))),\
+	  $(MAKE) -C $(impl) $(subst $(impl)/,,$(@)))
 
 # Allow test, test^STEP, test^IMPL, and test^IMPL^STEP
 .SECONDEXPANSION:
